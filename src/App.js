@@ -1,27 +1,29 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { UserProvider } from './context/UserContext';
+import Home from './Pages/Home/Home'
+import Login from './Pages/Login/Login'
 import Navbar from './components/Navbar/Navbar';
-import Header from './components/Header/Header';
-import ProductSlider from './components/ProductSlider/ProductSlider';
+// ⚠️ Ya no necesitas importar Header/ProductSlider aquí si están en Home
+// import Header from './components/Header/Header'; 
+// import ProductSlider from './components/ProductSlider/ProductSlider';
 import Registro from './components/Registro/Registro'
 import Footer from './components/Footer/Footer';
 
 const App = () => {
   return (
-    <Router>
-      <Navbar /> 
-      <Routes>
-        {/* Ruta de la página principal */}
-        <Route path="/" element={
-          <>
-            <Header />
-            <ProductSlider />
-            <Footer />
-          </>
-        } />
-        {/* Ruta para el formulario de registro */}
-        <Route path="/registro" element={<Registro />} />
-      </Routes>
-    </Router>
+    // 2. Envuelve toda la aplicación con el UserProvider
+    <UserProvider> 
+      <Router>
+        <Navbar /> 
+        <Routes>
+          {/* Rutas que necesitan el contexto */}
+          <Route path="/" element={<Home />} />
+          <Route path="/ingreso" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
+        </Routes>
+        <Footer />
+      </Router>
+    </UserProvider>
   );
 }
 
