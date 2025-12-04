@@ -1,5 +1,6 @@
 import React from 'react';
 import './Footer.css'; // Puedes crear estilos aparte
+import {Link} from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -21,7 +22,7 @@ const Footer = () => {
         <div>
           <h4>Cuenta</h4>
           <ul>
-            <li><a href="/login">Ingresar</a></li>
+            <li><a href="/ingreso">Ingresar</a></li>
             <li><a href="/registro">Regístrate</a></li>
             <li><a href="/perfil">Mi perfil</a></li>
           </ul>
