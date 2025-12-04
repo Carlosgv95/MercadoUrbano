@@ -3,6 +3,7 @@ import Navbar from './components/Navbar/Navbar';
 import Header from './components/Header/Header';
 import ProductSlider from './components/ProductSlider/ProductSlider';
 import Registro from './components/Registro/Registro'
+import Footer from './components/Footer/Footer';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           <>
             <Header />
             <ProductSlider />
+            <Footer />
           </>
         } />
         {/* Ruta para el formulario de registro */}
