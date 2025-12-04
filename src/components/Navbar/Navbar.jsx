@@ -4,6 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import NavbarBS from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import {Link} from 'react-router-dom';
 
 const Navbar = () => {
   return (
@@ -18,7 +19,7 @@ const Navbar = () => {
             navbarScroll
           >
             <Nav.Link href="#action1"> Ingresar 🔐 </Nav.Link>
-            <Nav.Link href="#action2"> Registrate 🔐</Nav.Link>
+            <Nav.Link as={Link} to="/registro"> Registrate 🔐</Nav.Link>
             <NavDropdown title="Categorias" id="navbarScrollingDropdown">
               <NavDropdown.Item href="#action3">Productos</NavDropdown.Item>
               <NavDropdown.Item href="#action4">
