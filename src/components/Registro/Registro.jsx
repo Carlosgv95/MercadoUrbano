@@ -14,80 +14,138 @@ const Registro = () => {
       event.preventDefault();
       event.stopPropagation();
     }
-
     setValidated(true);
   };
 
   return (
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
+    <Form noValidate validated={validated} onSubmit={handleSubmit} className="p-4 shadow rounded bg-white">
+      <h2 className="mb-4 text-center">Registro de Usuario</h2>
+
       <Row className="mb-3">
-        <Form.Group as={Col} md="4" controlId="validationCustom01">
-          <Form.Label>First name</Form.Label>
+        <Form.Group as={Col} md="6" controlId="validationNombre">
+          <Form.Label>Nombre</Form.Label>
           <Form.Control
             required
             type="text"
-            placeholder="First name"
-            defaultValue="Mark"
+            placeholder="Ingrese su nombre"
           />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">
+            Por favor ingrese su nombre.
+          </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <Form.Label>Last name</Form.Label>
+
+        <Form.Group as={Col} md="6" controlId="validationApellido">
+          <Form.Label>Apellido</Form.Label>
           <Form.Control
             required
             type="text"
-            placeholder="Last name"
-            defaultValue="Otto"
+            placeholder="Ingrese su apellido"
           />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">
+            Por favor ingrese su apellido.
+          </Form.Control.Feedback>
         </Form.Group>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="name@example.com" />
-      </Form.Group>
-        <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-          <Form.Label>Username</Form.Label>
+      </Row>
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6" controlId="validationEmail">
+          <Form.Label>Correo electrónico</Form.Label>
+          <Form.Control
+            required
+            type="email"
+            placeholder="ejemplo@correo.com"
+          />
+          <Form.Control.Feedback type="invalid">
+            Ingrese un correo electrónico válido.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group as={Col} md="6" controlId="validationUsuario">
+          <Form.Label>Usuario</Form.Label>
           <InputGroup hasValidation>
-            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
+            <InputGroup.Text>@</InputGroup.Text>
             <Form.Control
               type="text"
-              placeholder="Username"
-              aria-describedby="inputGroupPrepend"
+              placeholder="Nombre de usuario"
               required
             />
             <Form.Control.Feedback type="invalid">
-              Please choose a username.
+              Por favor elija un nombre de usuario.
             </Form.Control.Feedback>
           </InputGroup>
         </Form.Group>
       </Row>
+
       <Row className="mb-3">
-        <Form.Group as={Col} md="6" controlId="validationCustom03">
-          <Form.Label>City</Form.Label>
-          <Form.Control type="text" placeholder="City" required />
+        <Form.Group as={Col} md="6" controlId="validationPassword">
+          <Form.Label>Contraseña</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            placeholder="Ingrese su contraseña"
+            minLength={6}
+          />
           <Form.Control.Feedback type="invalid">
-            Please provide a valid city.
+            La contraseña debe tener al menos 6 caracteres.
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group as={Col} md="3" controlId="validationCustom04">
-          <Form.Label>State</Form.Label>
-          <Form.Control type="text" placeholder="State" required />
+
+        <Form.Group as={Col} md="6" controlId="validationConfirmPassword">
+          <Form.Label>Confirmar contraseña</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            placeholder="Repita su contraseña"
+          />
           <Form.Control.Feedback type="invalid">
-            Please provide a valid state.
+            Por favor confirme su contraseña.
           </Form.Control.Feedback>
         </Form.Group>
       </Row>
-      <Form.Group className="mb-3">
+
+      <Row className="mb-3">
+        <Form.Group as={Col} md="6" controlId="validationCiudad">
+          <Form.Label>Ciudad</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingrese su ciudad"
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Por favor ingrese una ciudad válida.
+          </Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group as={Col} md="6" controlId="validationRegion">
+          <Form.Label>Región</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Ingrese su región"
+            required
+          />
+          <Form.Control.Feedback type="invalid">
+            Por favor ingrese una región válida.
+          </Form.Control.Feedback>
+        </Form.Group>
+      </Row>
+
+      <Form.Group className="mb-3" controlId="validationTerminos">
         <Form.Check
           required
-          label="Agree to terms and conditions"
-          feedback="You must agree before submitting."
+          label="Acepto los términos y condiciones"
+          feedback="Debe aceptar antes de enviar."
           feedbackType="invalid"
         />
       </Form.Group>
-      <Button type="submit">Submit form</Button>
+
+     <div className="d-flex justify-content-center">
+  <Button variant="primary" type="submit" className="px-4">
+    Registrarme
+  </Button>
+</div>
+
     </Form>
   );
-}
+};
 
 export default Registro;

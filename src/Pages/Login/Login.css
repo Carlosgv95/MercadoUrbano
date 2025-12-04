@@ -1,22 +1,89 @@
+/* Contenedor principal */
 .login {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0;
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.success {
-    background-color: green;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
+/* Título */
+.login h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-weight: 600;
 }
 
-.error {
-    background-color: red;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
+/* Mensaje de error */
+.login .error {
+  color: #d9534f;
+  background: #f9d6d5;
+  padding: 0.5rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Formulario */
+.login form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Inputs */
+.login input {
+  padding: 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.login input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Botón */
+.login button {
+  padding: 0.9rem;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login button:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.login button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Texto inferior */
+.login p {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.login a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login a:hover {
+  text-decoration: underline;
 }

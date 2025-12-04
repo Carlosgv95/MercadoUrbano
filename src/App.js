@@ -3,9 +3,6 @@ import { UserProvider } from './context/UserContext';
 import Home from './Pages/Home/Home'
 import Login from './Pages/Login/Login'
 import Navbar from './components/Navbar/Navbar';
-// ⚠️ Ya no necesitas importar Header/ProductSlider aquí si están en Home
-// import Header from './components/Header/Header'; 
-// import ProductSlider from './components/ProductSlider/ProductSlider';
 import Registro from './components/Registro/Registro'
 import Footer from './components/Footer/Footer';
 
