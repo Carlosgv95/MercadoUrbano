@@ -7,7 +7,7 @@ import Footer from './components/Footer/Footer';
 
 const App = () => {
   return (
-    <Router>
+    <Router>cd C:\Users\heber\MercadoUrbano
       <Navbar /> 
       <Routes>
         {/* Ruta de la página principal */}
