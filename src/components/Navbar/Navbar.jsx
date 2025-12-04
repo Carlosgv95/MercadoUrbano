@@ -30,7 +30,7 @@ const Navbar = () => {
                 Contactenos
               </NavDropdown.Item>
             </NavDropdown>
-            <Nav.Link href="#"> 🛒 </Nav.Link>
+            <Nav.Link as={Link} to="/carrito"> 🛒 </Nav.Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control
