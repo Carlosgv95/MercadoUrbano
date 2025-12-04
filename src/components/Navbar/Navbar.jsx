@@ -10,7 +10,7 @@ const Navbar = () => {
   return (
     <NavbarBS expand="lg" bg="success" data-bs-theme="dark">
       <Container fluid>
-        <NavbarBS.Brand href="#">MercadoUrbano</NavbarBS.Brand>
+        <NavbarBS.Brand as={Link} to="/">MercadoUrbano</NavbarBS.Brand>
         <NavbarBS.Toggle aria-controls="navbarScroll" />
         <NavbarBS.Collapse id="navbarScroll">
           <Nav
@@ -18,7 +18,7 @@ const Navbar = () => {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Nav.Link href="#action1"> Ingresar 🔐 </Nav.Link>
+            <Nav.Link as={Link} to="/ingreso"> Ingresar 🔐 </Nav.Link>
             <Nav.Link as={Link} to="/registro"> Registrate 🔐</Nav.Link>
             <NavDropdown title="Categorias" id="navbarScrollingDropdown">
               <NavDropdown.Item href="#action3">Productos</NavDropdown.Item>
