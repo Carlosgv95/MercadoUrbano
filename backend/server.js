@@ -1,24 +1,31 @@
-// backend/server.js
+// backend/server.js (Nuevo contenido)
 
 const express = require('express');
 const cors = require('cors');
-// Si usas dotenv, descomenta las siguientes líneas
-// require('dotenv').config(); 
+// require('dotenv').config(); // Si estás usando dotenv
 
 const app = express();
-// Define el puerto, usa la variable de entorno o un valor por defecto (ej. 5000)
 const port = process.env.PORT || 5000; 
 
-// Middlewares
+// 1. Middlewares globales
 app.use(cors());
-app.use(express.json()); // Para poder leer JSON en las peticiones body
+app.use(express.json()); // Para leer JSON del body
+// app.use(express.urlencoded({ extended: true })); // Si manejas datos de formularios
 
-// Ruta de prueba
-app.get('/', (req, res) => {
-    res.send('¡Servidor Express está funcionando!');
-});
+// 2. Importar Rutas
+const testRoutes = require('./routes/test.routes');
+// const userRoutes = require('./routes/user.route'); // Otras rutas que añadas
 
-// Iniciar el servidor
+// 3. Conectar Rutas a la Aplicación
+// Todas las rutas dentro de testRoutes ahora empiezan con '/api'
+app.use('/api', testRoutes); 
+// app.use('/api/users', userRoutes); 
+
+// 4. (Opcional) Lógica de conexión a DB (mover a db/connect.js más adelante)
+// require('./db/connect')(); 
+
+// 5. Iniciar el servidor
 app.listen(port, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${port}`);
+    console.log(`🚀 Servidor MVC corriendo en http://localhost:${port}`);
+    console.log(`Ruta de prueba: http://localhost:${port}/api`);
 });
