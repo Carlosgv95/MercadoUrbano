@@ -1,11 +1,17 @@
 // backend/server.js (Nuevo contenido)
 
 const express = require('express');
+require('dotenv').config(); // Asegúrate de cargar las variables de entorno
 const cors = require('cors');
+
 // require('dotenv').config(); // Si estás usando dotenv
 
 const app = express();
 const port = process.env.PORT || 5000; 
+
+// Importar el módulo de conexión a la base de datos
+const { connectDB } = require('./db/config'); // <-- Agregamos esta línea
+connectDB(); // <-- Llamamos a la función de conexión aquí
 
 // 1. Middlewares globales
 app.use(cors());
