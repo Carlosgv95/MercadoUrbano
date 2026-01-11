@@ -6,12 +6,17 @@ import Navbar from './components/Navbar/Navbar';
 import Registro from './components/Registro/Registro'
 import Footer from './components/Footer/Footer';
 import Cart from './components/Cart/Cart';
+<<<<<<< HEAD
 import Perfil from './Pages/Perfil/Perfil';
 import Productos from './Pages/Productos/Productos';
 import CrearPublicacion from './Pages/CrearPublicacion/CrearPublicacion';
 import { CartProvider } from './context/CartContext';
 
 
+=======
+import { CartProvider } from './context/CartContext';
+
+>>>>>>> 20da3235139a8979e72a842cb361e16202e47a85
 const App = () => {
   return (
     // 2. Envuelve toda la aplicación con el UserProvider
@@ -25,9 +30,12 @@ const App = () => {
           <Route path="/ingreso" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
           <Route path="/carrito" element={<Cart />} />
+<<<<<<< HEAD
           <Route path="/perfil" element={ <Perfil />} />
           <Route path="/productos" element={<Productos />} />
           <Route path="/crear-publicacion" element={<CrearPublicacion />} />
+=======
+>>>>>>> 20da3235139a8979e72a842cb361e16202e47a85
         </Routes>
         <Footer />
       </Router>
