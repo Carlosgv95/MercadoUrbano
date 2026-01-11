@@ -21,11 +21,7 @@ const Navbar = () => {
             <Nav.Link as={Link} to="/ingreso"> Ingresar 🔐 </Nav.Link>
             <Nav.Link as={Link} to="/registro"> Registrate 🔐</Nav.Link>
             <NavDropdown title="Categorias" id="navbarScrollingDropdown">
-<<<<<<< HEAD
               <NavDropdown.Item as={Link} to="/productos">Productos</NavDropdown.Item>
-=======
-              <NavDropdown.Item href="#action3">Productos</NavDropdown.Item>
->>>>>>> 20da3235139a8979e72a842cb361e16202e47a85
               <NavDropdown.Item href="#action4">
                 Servicios
               </NavDropdown.Item>
