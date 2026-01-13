@@ -13,7 +13,7 @@ import {
 } from 'react-bootstrap';
 
 const Productos = () => {
-  // 1. ESTADO DE DATOS (Simulando base de datos)
+ 
   const [productos] = useState([
     { id: 1, name: 'Zapatillas Superstar', price: '89.990', originalPrice: '99.990', brand: 'Originals', category: 'Calzado', description: 'El estilo clásico de las canchas de baloncesto de los 70. Un icono de la moda urbana.', imageUrl: 'https://placehold.co/400x400/eeeeee/333333?text=Superstar' },
     { id: 2, name: 'Zapatillas Campus 00s', price: '99.990', originalPrice: null, brand: 'Originals', category: 'Calzado', description: 'Inspiradas en el skate de los 2000, con proporciones audaces y materiales premium.', imageUrl: 'https://placehold.co/400x400/cccccc/333333?text=Campus+00s' },
@@ -26,13 +26,13 @@ const Productos = () => {
     { id: 9, name: 'Sandalias Comfy', price: '35.000', originalPrice: '40.000', brand: 'Casual', category: 'Verano', description: 'Frescura y ligereza para tus vacaciones.', imageUrl: 'https://placehold.co/400x400/666666/ffffff?text=Sandalias' },
   ]);
 
-  // 2. ESTADOS DE FILTRO Y MODAL
+  
   const [filtroMarca, setFiltroMarca] = useState('Todos');
   const [orden, setOrden] = useState('default');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // 3. LÓGICA DE FILTRADO (useMemo para rendimiento)
+  
   const limpiarPrecio = (str) => Number(str.replace(/\./g, ''));
 
   const productosFiltrados = useMemo(() => {
@@ -46,7 +46,7 @@ const Productos = () => {
     return res;
   }, [productos, filtroMarca, orden]);
 
-  // 4. MANEJADORES DEL MODAL
+  
   const handleOpenModal = (prod) => {
     setSelectedProduct(prod);
     setShowModal(true);
@@ -55,7 +55,7 @@ const Productos = () => {
   return (
     <Container fluid className="bg-light min-vh-100 py-4 px-lg-5">
       <Row>
-        {/* --- COLUMNA IZQUIERDA: SIDEBAR --- */}
+        
         <Col md={3} lg={2} className="mb-4">
           <div className="bg-white p-3 rounded shadow-sm">
             <h6 className="fw-bold mb-3 border-bottom pb-2">FILTRAR POR MARCA</h6>
@@ -81,7 +81,7 @@ const Productos = () => {
           </div>
         </Col>
 
-        {/* --- COLUMNA DERECHA: GRILLA DE CARDS --- */}
+       
         <Col md={9} lg={10}>
           <Row xs={1} sm={2} md={2} lg={3} xl={4} className="g-4">
             {productosFiltrados.map((prod) => (

@@ -6,7 +6,7 @@ const Perfil = () => {
     <Container fluid className="p-0">
       <Row className="g-0" style={{ minHeight: '90vh' }}>
         
-        {/* --- COLUMNA IZQUIERDA: SIDEBAR --- */}
+        
         <Col md={3} lg={2} className="bg-white border-end p-4">
           <h4 className="text-primary fw-bold mb-4">MI PERFIL</h4>
           <Nav className="flex-column gap-3">
@@ -22,11 +22,11 @@ const Perfil = () => {
           </Nav>
         </Col>
 
-        {/* --- COLUMNA DERECHA: FORMULARIO --- */}
+        
         <Col md={9} lg={10} className="bg-light p-5">
           <Card className="border-0 shadow-sm p-4">
             
-            {/* Sección de Foto */}
+            
             <div className="d-flex align-items-center justify-content-between mb-5">
               <div className="d-flex gap-2">
                 <Button variant="primary" size="sm">Subir Foto</Button>
@@ -39,7 +39,7 @@ const Perfil = () => {
               />
             </div>
 
-            {/* Formulario de Datos */}
+          
             <Form>
               <Row className="mb-4">
                 <Form.Group as={Col} md="6">

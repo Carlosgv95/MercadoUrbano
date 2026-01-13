@@ -20,11 +20,10 @@ const Registro = () => {
   };
 
   return (
-    // 1. El Container ocupa el 100% del alto de la pantalla (vh-100)
-    // 2. Usamos Flexbox para centrar (d-flex, align-items-center, justify-content-center)
+
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Row className="w-100 justify-content-center">
-        {/* 3. Definimos el ancho del formulario según el dispositivo (md="6" o lg="4") */}
+        
         <Col md={8} lg={5}>
           <Card className="shadow-lg p-4">
             <Card.Body>

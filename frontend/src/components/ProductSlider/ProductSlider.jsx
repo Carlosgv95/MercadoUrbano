@@ -68,7 +68,7 @@ const ProductSlider = ({ title }) => {
     setFavorites(prev => prev.find(x => x.id === p.id) ? prev.filter(x => x.id !== p.id) : [...prev, p]);
   };
 
-  // Ajuste según tamaño de pantalla (puedes simplificarlo a 4 para escritorio)
+  
   const cardsPerSlide = 4;
   const productSlides = chunkArray(products, cardsPerSlide);
 
@@ -79,7 +79,7 @@ const ProductSlider = ({ title }) => {
         <Button variant="outline-dark" size="sm" as={Link} to="/productos">Ver más</Button>
       </div>
 
-      {/* Importante: variant="dark" para que las flechas se vean en fondo claro */}
+      
       <Carousel indicators={false} interval={null} variant="dark" className="px-5">
         {productSlides.map((slide, idx) => (
           <Carousel.Item key={idx}>
@@ -100,7 +100,7 @@ const ProductSlider = ({ title }) => {
         ))}
       </Carousel>
 
-      {/* MODAL (Igual que antes) */}
+  
       {selectedProduct && (
         <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
           <Modal.Header closeButton className="border-0" />
@@ -122,7 +122,7 @@ const ProductSlider = ({ title }) => {
         </Modal>
       )}
 
-      {/* CSS para corregir flechas que no se ven */}
+      
       <style>{`
         .carousel-control-prev, .carousel-control-next {
           width: 5%;

@@ -1,19 +1,17 @@
 import Carousel from 'react-bootstrap/Carousel';
-// CORRECCIÓN: Se sustituye la importación del archivo local ('./img/oferta.png') 
-// por una URL pública para evitar errores de resolución del sistema de archivos.
-// Esta URL temporal muestra un placeholder que indica 50% OFF.
+
 const ofertaImage = 'https://placehold.co/1200x400/3c7849/ffffff?text=50%25+OFF+EN+TODO'; 
 
 const Header =()=> {
   return (
-    // Componente principal de Carousel con efecto fade
+    
     <Carousel fade>
       
-      {/* Diapositiva 1 */}
+      
       <Carousel.Item>
-        {/* Usamos la etiqueta <img> para renderizar la imagen */}
+       
         <img
-          className="d-block w-100" // Clases de Bootstrap para que ocupe todo el ancho
+          className="d-block w-100" 
           src={ofertaImage} 
           alt="First slide: Oferta Flash"
         />
@@ -23,7 +21,7 @@ const Header =()=> {
         </Carousel.Caption>
       </Carousel.Item>
       
-      {/* Diapositiva 2 */}
+      
       <Carousel.Item>
         <img
           className="d-block w-100"
@@ -36,7 +34,7 @@ const Header =()=> {
         </Carousel.Caption>
       </Carousel.Item>
 
-      {/* Diapositiva 3 (Completada) */}
+      
       <Carousel.Item>
         <img
           className="d-block w-100"
