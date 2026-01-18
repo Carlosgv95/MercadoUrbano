@@ -1,29 +1,37 @@
-import { useState, useContext } from 'react';
-import { UserContext } from '../../context/UserContext';
-// Importa Container, Row y Col
+import { useState } from 'react';
 import { Form, Button, Row, Col, Alert, Card, Container } from 'react-bootstrap';
 
 const Registro = () => {
   const [formData, setFormData] = useState({});
-  const { register, authError } = useContext(UserContext);
+  const [authError, setAuthError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const success = await register(formData);
-    if (success) {
-      alert('✅ Registro exitoso 🚀');
+
+    try {
+      // Recuperar usuarios previos del localStorage
+      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+      // Agregar el nuevo usuario
+      usuarios.push(formData);
+
+      // Guardar nuevamente en localStorage como JSON
+      localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+      alert("✅ Registro exitoso 🚀");
+      setAuthError(null);
+    } catch (error) {
+      setAuthError("Error al guardar el usuario");
     }
   };
 
   return (
-
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Row className="w-100 justify-content-center">
-        
         <Col md={8} lg={5}>
           <Card className="shadow-lg p-4">
             <Card.Body>
@@ -85,3 +93,4 @@ const Registro = () => {
 };
 
 export default Registro;
+

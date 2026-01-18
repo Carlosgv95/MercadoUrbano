@@ -46,7 +46,7 @@ const ProductCard = ({ product, toggleFavorite, addToCart, isFavorite, onOpenMod
           className="w-100 mt-2 py-1 fw-bold" 
           onClick={(e) => { e.stopPropagation(); addToCart(product); }}
         >
-          Agregar
+          Agregar al carrito
         </Button>
       </Card.Body>
     </Card>

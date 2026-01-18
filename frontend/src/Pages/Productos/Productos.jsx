@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { 
   Container, 
   Row, 
@@ -11,33 +11,46 @@ import {
   Image, 
   Badge 
 } from 'react-bootstrap';
-import products from "../../Data/products";
+import products from "../../Data/products"; // 👈 catálogo externo
+import { CartContext } from "../../context/CartContext"; // 👈 carrito
 
 const Productos = () => {
-  // usamos directamente los productos importados
   const [productos] = useState(products);
 
   const [filtroMarca, setFiltroMarca] = useState('Todos');
   const [orden, setOrden] = useState('default');
+  const [busqueda, setBusqueda] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
+  const { addToCart } = useContext(CartContext); // 👈 conexión al carrito
+
   const limpiarPrecio = (val) => {
-    
     if (typeof val === "number") return val;
     return Number(val.replace(/\./g, ''));
   };
 
   const productosFiltrados = useMemo(() => {
     let res = [...productos];
+
+    // Filtrar por marca
     if (filtroMarca !== 'Todos') res = res.filter(p => p.brand === filtroMarca);
 
+    // Filtrar por búsqueda
+    if (busqueda.trim() !== '') {
+      res = res.filter(p => 
+        p.name.toLowerCase().includes(busqueda.toLowerCase()) ||
+        p.description.toLowerCase().includes(busqueda.toLowerCase())
+      );
+    }
+
+    // Ordenar
     if (orden === 'precio-asc') res.sort((a, b) => limpiarPrecio(a.price) - limpiarPrecio(b.price));
     else if (orden === 'precio-desc') res.sort((a, b) => limpiarPrecio(b.price) - limpiarPrecio(a.price));
     else if (orden === 'alfa') res.sort((a, b) => a.name.localeCompare(b.name));
 
     return res;
-  }, [productos, filtroMarca, orden]);
+  }, [productos, filtroMarca, orden, busqueda]);
 
   const handleOpenModal = (prod) => {
     setSelectedProduct(prod);
@@ -70,6 +83,15 @@ const Productos = () => {
               <option value="precio-desc">Mayor precio</option>
               <option value="alfa">Nombre A-Z</option>
             </Form.Select>
+
+            <h6 className="fw-bold mb-3 border-bottom pb-2 mt-3">BUSCAR</h6>
+            <Form.Control 
+              type="text" 
+              placeholder="Buscar producto..." 
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              size="sm"
+            />
           </div>
         </Col>
 
@@ -87,7 +109,7 @@ const Productos = () => {
                     <Card.Img 
                       variant="top" 
                       src={prod.imageUrl} 
-                      style={{ height: '180px', objectFit: 'cover' }}
+                      style={{ height: '180px', objectFit: 'cover' }} // 👈 imágenes uniformes
                     />
                     <div className="position-absolute top-0 end-0 p-2">
                        <Badge bg="white" text="dark" className="rounded-circle shadow-sm">●</Badge>
@@ -109,7 +131,10 @@ const Productos = () => {
                     <Button 
                       variant="dark" 
                       className="mt-auto w-100 rounded-1 py-2 fw-bold small"
-                      onClick={(e) => { e.stopPropagation(); alert("Agregado al carro"); }}
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        addToCart(prod); // 👈 agrega al carrito
+                      }}
                     >
                       Agregar al carrito
                     </Button>
@@ -144,7 +169,13 @@ const Productos = () => {
                 </p>
                 <div className="d-grid gap-2">
                   <Button variant="primary" size="lg" className="fw-bold">Comprar ahora</Button>
-                  <Button variant="outline-dark" size="lg">Agregar al carrito</Button>
+                  <Button 
+                    variant="outline-dark" 
+                    size="lg" 
+                    onClick={() => addToCart(selectedProduct)} // 👈 también aquí
+                  >
+                    Agregar al carrito
+                  </Button>
                   <Button variant="link" className="text-danger text-decoration-none mt-2">
                     ❤️ Agregar a Favoritos
                   </Button>
@@ -159,3 +190,4 @@ const Productos = () => {
 };
 
 export default Productos;
+
