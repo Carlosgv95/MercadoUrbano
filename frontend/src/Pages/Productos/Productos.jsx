@@ -11,29 +11,22 @@ import {
   Image, 
   Badge 
 } from 'react-bootstrap';
+import products from "../../Data/products";
 
 const Productos = () => {
- 
-  const [productos] = useState([
-    { id: 1, name: 'Zapatillas Superstar', price: '89.990', originalPrice: '99.990', brand: 'Originals', category: 'Calzado', description: 'El estilo clásico de las canchas de baloncesto de los 70. Un icono de la moda urbana.', imageUrl: 'https://placehold.co/400x400/eeeeee/333333?text=Superstar' },
-    { id: 2, name: 'Zapatillas Campus 00s', price: '99.990', originalPrice: null, brand: 'Originals', category: 'Calzado', description: 'Inspiradas en el skate de los 2000, con proporciones audaces y materiales premium.', imageUrl: 'https://placehold.co/400x400/cccccc/333333?text=Campus+00s' },
-    { id: 3, name: 'Zapatillas Handball Spezial', price: '99.990', originalPrice: '120.000', brand: 'Originals', category: 'Calzado', description: 'Lanzadas originalmente en 1979 para jugadores de balonmano, ahora un clásico de culto.', imageUrl: 'https://placehold.co/400x400/dddddd/333333?text=Handball+Spezial' },
-    { id: 4, name: 'Zapatillas Campus Grey', price: '99.990', originalPrice: null, brand: 'Originals', category: 'Calzado', description: 'Versatilidad en color gris con la comodidad de siempre.', imageUrl: 'https://placehold.co/400x400/bbbbbb/333333?text=Campus+Grey' },
-    { id: 5, name: 'Zapatillas Cloudfoam', price: '59.990', originalPrice: '65.000', brand: 'Casual', category: 'Deporte', description: 'Amortiguación superior para el día a día.', imageUrl: 'https://placehold.co/400x400/999999/ffffff?text=Cloudfoam' },
-    { id: 6, name: 'Botines de Fútbol', price: '159.990', originalPrice: null, brand: 'Performance', category: 'Deporte', description: 'Tracción máxima para jugadores de alto rendimiento.', imageUrl: 'https://placehold.co/400x400/888888/ffffff?text=Botines' },
-    { id: 7, name: 'Mocasines Classic', price: '75.000', originalPrice: '85.000', brand: 'Casual', category: 'Vestir', description: 'Elegancia y confort en cuero sintético de alta calidad.', imageUrl: 'https://placehold.co/400x400/aaaaaa/333333?text=Mocasines' },
-    { id: 8, name: 'Tenis Running Pro', price: '110.000', originalPrice: null, brand: 'Performance', category: 'Deporte', description: 'Diseñados para largas distancias y protección articular.', imageUrl: 'https://placehold.co/400x400/777777/ffffff?text=Running+Pro' },
-    { id: 9, name: 'Sandalias Comfy', price: '35.000', originalPrice: '40.000', brand: 'Casual', category: 'Verano', description: 'Frescura y ligereza para tus vacaciones.', imageUrl: 'https://placehold.co/400x400/666666/ffffff?text=Sandalias' },
-  ]);
+  // usamos directamente los productos importados
+  const [productos] = useState(products);
 
-  
   const [filtroMarca, setFiltroMarca] = useState('Todos');
   const [orden, setOrden] = useState('default');
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  
-  const limpiarPrecio = (str) => Number(str.replace(/\./g, ''));
+  const limpiarPrecio = (val) => {
+    
+    if (typeof val === "number") return val;
+    return Number(val.replace(/\./g, ''));
+  };
 
   const productosFiltrados = useMemo(() => {
     let res = [...productos];
@@ -46,7 +39,6 @@ const Productos = () => {
     return res;
   }, [productos, filtroMarca, orden]);
 
-  
   const handleOpenModal = (prod) => {
     setSelectedProduct(prod);
     setShowModal(true);
@@ -55,7 +47,7 @@ const Productos = () => {
   return (
     <Container fluid className="bg-light min-vh-100 py-4 px-lg-5">
       <Row>
-        
+        {/* --- FILTROS --- */}
         <Col md={3} lg={2} className="mb-4">
           <div className="bg-white p-3 rounded shadow-sm">
             <h6 className="fw-bold mb-3 border-bottom pb-2">FILTRAR POR MARCA</h6>
@@ -81,7 +73,7 @@ const Productos = () => {
           </div>
         </Col>
 
-       
+        {/* --- GRID DE PRODUCTOS --- */}
         <Col md={9} lg={10}>
           <Row xs={1} sm={2} md={2} lg={3} xl={4} className="g-4">
             {productosFiltrados.map((prod) => (
@@ -95,7 +87,7 @@ const Productos = () => {
                     <Card.Img 
                       variant="top" 
                       src={prod.imageUrl} 
-                      style={{ mixBlendMode: 'multiply', height: '180px', objectFit: 'contain' }} 
+                      style={{ height: '180px', objectFit: 'cover' }}
                     />
                     <div className="position-absolute top-0 end-0 p-2">
                        <Badge bg="white" text="dark" className="rounded-circle shadow-sm">●</Badge>
@@ -136,7 +128,7 @@ const Productos = () => {
           <Modal.Body className="px-4 pb-4">
             <Row className="align-items-center">
               <Col md={6} className="text-center bg-light rounded p-4">
-                <Image src={selectedProduct.imageUrl} fluid className="rounded" style={{ maxHeight: '400px' }} />
+                <Image src={selectedProduct.imageUrl} fluid className="rounded" style={{ maxHeight: '400px', objectFit: 'contain' }} />
               </Col>
               <Col md={6} className="ps-lg-5 mt-4 mt-md-0">
                 <Badge bg="secondary" className="mb-2">{selectedProduct.brand}</Badge>

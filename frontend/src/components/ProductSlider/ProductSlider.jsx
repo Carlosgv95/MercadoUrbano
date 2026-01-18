@@ -2,18 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Card, Button, Row, Col, Container, Carousel, Modal, Image, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { CartContext } from '../../context/CartContext';
-
-// --- 1. DATOS DE EJEMPLO ---
-const products = [
-  { id: 1, name: 'Zapatillas Superstar', price: 89990, originalPrice: 99990, brand: 'Originals', description: 'Diseño clásico.', imageUrl: 'https://placehold.co/400x400/eeeeee/333333?text=Superstar' },
-  { id: 2, name: 'Zapatillas Campus 00s', price: 99990, originalPrice: null, brand: 'Originals', description: 'Estilo skate.', imageUrl: 'https://placehold.co/400x400/cccccc/333333?text=Campus+00s' },
-  { id: 3, name: 'Zapatillas Handball Spezial', price: 99990, originalPrice: 120000, brand: 'Originals', description: 'Retro vibe.', imageUrl: 'https://placehold.co/400x400/dddddd/333333?text=Handball' },
-  { id: 4, name: 'Zapatillas Campus Grey', price: 99990, originalPrice: null, brand: 'Originals', description: 'Color gris.', imageUrl: 'https://placehold.co/400x400/bbbbbb/333333?text=Grey' },
-  { id: 5, name: 'Zapatillas Cloudfoam', price: 59990, originalPrice: 65000, brand: 'Casual', description: 'Comodidad total.', imageUrl: 'https://placehold.co/400x400/999999/ffffff?text=Cloudfoam' },
-  { id: 6, name: 'Botines de Fútbol', price: 159990, originalPrice: null, brand: 'Performance', description: 'Para ganar.', imageUrl: 'https://placehold.co/400x400/888888/ffffff?text=Botines' },
-  { id: 7, name: 'Mocasines Classic', price: 75000, originalPrice: 85000, brand: 'Casual', description: 'Formal.', imageUrl: 'https://placehold.co/400x400/aaaaaa/333333?text=Mocasines' },
-  { id: 8, name: 'Tenis Running Pro', price: 110000, originalPrice: null, brand: 'Performance', description: 'Corre más.', imageUrl: 'https://placehold.co/400x400/777777/ffffff?text=Running' },
-];
+import products from "../../Data/products";
 
 const chunkArray = (arr, size) => {
   const chunkedArr = [];
@@ -28,11 +17,15 @@ const ProductCard = ({ product, toggleFavorite, addToCart, isFavorite, onOpenMod
   return (
     <Card 
       className="border-0 shadow-sm h-100" 
-      style={{ cursor: 'pointer' }}
+      style={{ cursor: 'pointer' }} 
       onClick={() => onOpenModal(product)}
     >
       <div className="position-relative">
-        <Card.Img variant="top" src={product.imageUrl} className="rounded-0" />
+        <Card.Img 
+          variant="top" 
+          src={product.imageUrl} 
+          className="rounded-0 product-image" 
+        />
         <Button
           variant="light"
           className="rounded-circle p-2 shadow-sm"
@@ -48,7 +41,9 @@ const ProductCard = ({ product, toggleFavorite, addToCart, isFavorite, onOpenMod
         <div className="fw-bold">${product.price.toLocaleString('es-CL')}</div>
         <div className="text-truncate small text-muted">{product.name}</div>
         <Button 
-          variant="dark" size="sm" className="w-100 mt-2 py-1 fw-bold" 
+          variant="dark" 
+          size="sm" 
+          className="w-100 mt-2 py-1 fw-bold" 
           onClick={(e) => { e.stopPropagation(); addToCart(product); }}
         >
           Agregar
@@ -64,7 +59,7 @@ const ProductSlider = ({ title }) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  const { addToCart } = useContext(CartContext); // 👈 conexión al carrito
+  const { addToCart } = useContext(CartContext);
 
   const handleOpenModal = (p) => { setSelectedProduct(p); setShowModal(true); };
   const toggleFavorite = (p) => {
@@ -90,7 +85,7 @@ const ProductSlider = ({ title }) => {
                   <ProductCard
                     product={product}
                     toggleFavorite={toggleFavorite}
-                    addToCart={addToCart} // 👈 ahora sí agrega al carrito
+                    addToCart={addToCart}
                     isFavorite={favorites.some(f => f.id === product.id)}
                     onOpenModal={handleOpenModal}
                   />
@@ -107,10 +102,10 @@ const ProductSlider = ({ title }) => {
           <Modal.Body className="p-4">
             <Row className="align-items-center">
               <Col md={6} className="bg-light p-3 text-center">
-                <Image src={selectedProduct.imageUrl} fluid />
+                <Image src={selectedProduct.imageUrl} fluid className="modal-image" />
               </Col>
               <Col md={6}>
-                <Badge bg="dark">{selectedProduct.brand}</Badge>
+                <Badge bg="dark">{selectedProduct.category}</Badge>
                 <h3 className="fw-bold mt-2">{selectedProduct.name}</h3>
                 <h4 className="text-primary">${selectedProduct.price.toLocaleString('es-CL')}</h4>
                 <p className="text-muted small">{selectedProduct.description}</p>
@@ -134,9 +129,21 @@ const ProductSlider = ({ title }) => {
         .carousel-item {
           transition: transform 0.6s ease-in-out;
         }
+        .product-image {
+          height: 200px;       
+          width: 100%;         
+          object-fit: cover;   
+        }
+        .modal-image {
+          max-height: 400px;   
+          width: auto;
+          object-fit: contain;
+        }
       `}</style>
     </Container>
   );
 };
 
 export default ProductSlider;
+
+
