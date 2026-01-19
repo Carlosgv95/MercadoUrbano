@@ -1,7 +1,7 @@
 // routes/productRoutes.js
 const express = require('express');
 const router = express.Router();
-const products = require('../data/products'); // importamos el catálogo
+//const products = require('../data/products'); // importamos el catálogo
 
 // GET /productos → devuelve todo el catálogo
 router.get('/', (req, res) => {

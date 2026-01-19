@@ -1,6 +1,6 @@
 // routes/userRoutes.js
 const express = require('express');
-const { registerUser, getUserProfile } = require('../controllers/userController');
+const { registerUserController, getUserDataController, loginUserController } = require('../controllers/userController');
 const { verifyCredentials, verifyToken } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -8,15 +8,19 @@ const router = express.Router();
 /**
  * POST /usuarios
  * Registro de nuevos usuarios en MercadoUrbano
- * Middleware verifyCredentials asegura que email y password estén presentes
  */
-router.post('/usuarios', verifyCredentials, registerUser);
+router.post('/usuarios', verifyCredentials, registerUserController);
+
+/**
+ * POST /login
+ * Login de usuario para obtener JWT
+ */
+router.post('/login', verifyCredentials, loginUserController);
 
 /**
  * GET /usuarios
  * Devuelve los datos del usuario autenticado
- * Middleware verifyToken valida el JWT antes de acceder a los datos
  */
-router.get('/usuarios', verifyToken, getUserProfile);
+router.get('/usuarios', verifyToken, getUserDataController);
 
 module.exports = router;
