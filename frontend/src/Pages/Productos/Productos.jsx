@@ -47,13 +47,13 @@ const Productos = () => {
           <div className="bg-white p-3 rounded shadow-sm">
             <h6 className="fw-bold mb-3 border-bottom pb-2">FILTRAR</h6>
             <Nav className="flex-column mb-3">
-              {['Todos', 'Originals', 'Casual', 'Performance'].map(marca => (
+              {['Todos', 'Kitchen', 'Tools', 'Outdoor'].map(category => (
                 <Nav.Link 
-                  key={marca}
-                  onClick={() => setFiltroMarca(marca)}
-                  className={`py-1 px-0 small ${filtroMarca === marca ? 'fw-bold text-primary' : 'text-muted'}`}
+                  key={category}
+                  onClick={() => setFiltroMarca(category)}
+                  className={`py-1 px-0 small ${filtroMarca === category ? 'fw-bold text-primary' : 'text-muted'}`}
                 >
-                  {marca}
+                  {category}
                 </Nav.Link>
               ))}
             </Nav>
