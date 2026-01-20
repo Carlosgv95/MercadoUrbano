@@ -1,10 +1,10 @@
 import React from 'react';
-import './Footer.css'; // Puedes crear estilos aparte
-import {Link} from 'react-router-dom';
+import './Footer.css';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <footer className="footer" role="contentinfo">
       <div className="footer-top">
         <h3>MercadoUrbano</h3>
         <p>Tu mercado digital de confianza</p>
@@ -14,24 +14,24 @@ const Footer = () => {
         <div>
           <h4>Ayuda</h4>
           <ul>
-            <li><a href="/faq">Preguntas frecuentes</a></li>
-            <li><a href="/contacto">Contacto</a></li>
-            <li><a href="/envios">Envíos y devoluciones</a></li>
+            <li><Link to="/faq">Preguntas frecuentes</Link></li>
+            <li><Link to="/contacto">Contacto</Link></li>
+            <li><Link to="/envios">Envíos y devoluciones</Link></li>
           </ul>
         </div>
         <div>
           <h4>Cuenta</h4>
           <ul>
-            <li><a href="/ingreso">Ingresar</a></li>
-            <li><a href="/registro">Regístrate</a></li>
-            <li><a href="/perfil">Mi perfil</a></li>
+            <li><Link to="/ingreso">Ingresar</Link></li>
+            <li><Link to="/registro">Regístrate</Link></li>
+            <li><Link to="/perfil">Mi perfil</Link></li>
           </ul>
         </div>
         <div>
           <h4>Legal</h4>
           <ul>
-            <li><a href="/terminos">Términos y condiciones</a></li>
-            <li><a href="/privacidad">Política de privacidad</a></li>
+            <li><Link to="/terminos">Términos y condiciones</Link></li>
+            <li><Link to="/privacidad">Política de privacidad</Link></li>
           </ul>
         </div>
       </div>
