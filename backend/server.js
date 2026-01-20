@@ -50,6 +50,10 @@ app.listen(port, () => {
     console.log(`  POST   http://localhost:${port}/usuarios (Registro de usuario)`);
     console.log(`  POST   http://localhost:${port}/auth/login (Inicio de sesión, devuelve JWT)`);
     console.log(`  GET    http://localhost:${port}/productos (Obtener listado de productos)`);
+    console.log(`  POST   http://localhost:${port}/productos (Agregar producto)`);
+    console.log(`  DELETE http://localhost:${port}/productos/:id (Eliminar producto por ID)`);
     console.log(`  POST   http://localhost:${port}/carrito (Agregar producto al carrito, requiere JWT)`);
     console.log(`  GET    http://localhost:${port}/carrito (Obtener carrito del usuario, requiere JWT)`);
+    console.log(`  DELETE http://localhost:${port}/carrito/:productoId (Eliminar producto del carrito, requiere JWT)`);
 });
+
