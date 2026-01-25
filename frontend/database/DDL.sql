@@ -18,6 +18,37 @@ CREATE TABLE usuarios (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Perfil de usuarios
+CREATE TABLE perfil_usuario (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    nombre VARCHAR(100),
+    apellido VARCHAR(100),
+    telefono VARCHAR(20),
+    direccion TEXT,
+    foto_url TEXT
+);
+
+-- Crear publicaciones
+CREATE TABLE publicaciones (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    titulo VARCHAR(150) NOT NULL,
+    descripcion TEXT,
+    precio NUMERIC(10,2),
+    categoria VARCHAR(100),
+    imagen_url TEXT,
+    fecha_publicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Cerrar sesión
+CREATE TABLE logs_sesion (
+    id SERIAL PRIMARY KEY,
+    usuario_id INT REFERENCES usuarios(id) ON DELETE CASCADE,
+    accion VARCHAR(50), -- 'login', 'logout', 'eliminar_cuenta'
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Tabla de productos
 CREATE TABLE productos (
     id SERIAL PRIMARY KEY,
