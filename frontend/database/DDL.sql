@@ -2,6 +2,13 @@
 CREATE DATABASE mercadourbano;
 \c mercadourbano;
 
+--crear un usuario
+CREATE USER mercadouser WITH PASSWORD '12345';
+
+--permisos sobre la base de datos
+GRANT ALL PRIVILEGES ON DATABASE mercadourbano TO mercadouser;
+
+
 -- Tabla de usuarios
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
