@@ -1,26 +1,21 @@
-// routes/userRoutes.js
 const express = require('express');
-const { registerUserController, getUserDataController, loginUserController } = require('../controllers/userController');
-const { verifyCredentials, verifyToken } = require('../middlewares/authMiddleware');
-
 const router = express.Router();
+const pool = require('../config/db');
+const bcrypt = require('bcryptjs');
 
-/**
- * POST /usuarios
- * Registro de nuevos usuarios en MercadoUrbano
- */
-router.post('/usuarios', verifyCredentials, registerUserController);
-
-/**
- * POST /login
- * Login de usuario para obtener JWT
- */
-router.post('/login', verifyCredentials, loginUserController);
-
-/**
- * GET /usuarios
- * Devuelve los datos del usuario autenticado
- */
-router.get('/usuarios', verifyToken, getUserDataController);
+router.post('/', async (req, res) => {
+  const { nombre, email, password } = req.body;
+  try {
+    const password_hash = await bcrypt.hash(password, 10);
+    await pool.query(
+      'INSERT INTO usuarios (nombre, email, password_hash) VALUES ($1, $2, $3)',
+      [nombre, email, password_hash]
+    );
+    res.status(201).json({ message: 'Usuario registrado con éxito' });
+  } catch (err) {
+    console.error('Error al registrar usuario:', err);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
 
 module.exports = router;

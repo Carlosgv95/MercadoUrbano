@@ -1,55 +1,36 @@
 // controllers/authController.js
-const { findUserByEmail } = require('../models/userModel');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const pool = require('../config/db');
 
-/**
- * Controlador para la ruta POST /auth/login
- * Inicia sesión y genera un token JWT.
- */
-const loginUser = async (req, res) => {
-    try {
-        const { email, password } = req.body;
 
-        // Buscar usuario en la BD
-        const user = await findUserByEmail(email);
-        if (!user) {
-            return res.status(400).json({ message: 'Credenciales inválidas (email no encontrado).' });
-        }
+async function loginUser(req, res) {
+  const { email, password } = req.body;
+  try {
+    const result = await pool.query('SELECT * FROM usuarios WHERE email=$1', [email]);
+    const user = result.rows[0];
 
-        // Validar contraseña
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Credenciales inválidas (contraseña incorrecta).' });
-        }
-
-        // Generar token JWT con más información útil
-        const token = jwt.sign(
-            { id: user.id, email: user.email, rol: user.rol }, // payload más completo
-            process.env.JWT_SECRET,
-            { expiresIn: '2h' } // puedes ajustar el tiempo de expiración
-        );
-
-        // Respuesta con datos básicos del usuario
-        res.status(200).json({ 
-            message: 'Autenticación exitosa en MercadoUrbano',
-            token,
-            user: {
-                id: user.id,
-                email: user.email,
-                rol: user.rol,
-                lenguaje: user.lenguaje
-            }
-        });
-    } catch (error) {
-        console.error('Error en authController.loginUser:', error);
-        res.status(error.code || 500).json({ 
-            message: error.message || 'Error interno del servidor al iniciar sesión.' 
-        });
+    if (!user) {
+      return res.status(401).json({ message: 'Usuario no encontrado' });
     }
-};
 
-module.exports = {
-    loginUser
-};
+    const validPassword = await bcrypt.compare(password, user.password_hash);
+    if (!validPassword) {
+      return res.status(401).json({ message: 'Credenciales inválidas' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token });
+  } catch (err) {
+    console.error('Error en loginUser:', err);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+}
+
+module.exports = { loginUser };
+

@@ -5,6 +5,14 @@ CREATE DATABASE mercadourbano;
 --crear un usuario
 CREATE USER mercadouser WITH PASSWORD '12345';
 
+--Otorgar permisos
+GRANT USAGE ON SCHEMA public TO mercadouser;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE usuarios TO mercadouser;
+
+-- insertar un usuario de prueba
+INSERT INTO usuarios (nombre, email, password_hash) VALUES ('Juan', 'juan@correo.com', '$2a$10$abcdefghijklmnopqrstuv');
+
+
 --permisos sobre la base de datos
 GRANT ALL PRIVILEGES ON DATABASE mercadourbano TO mercadouser;
 
