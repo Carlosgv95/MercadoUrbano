@@ -1,54 +1,91 @@
 import './Login.css'
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import Loading from "../../components/Loading/Loading"; // importa tu componente Loading
+
+// Funciones de validación
+const validateEmail = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+};
+
+const validatePassword = (password) => {
+  return password.length >= 8; // mínimo 8 caracteres
+};
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { login, authLoading, authError } = useContext(UserContext);
+  const [localError, setLocalError] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(email, password);
-    if (success) {
-      navigate('/profile');
+
+    // Validaciones antes de llamar al contexto
+    if (!validateEmail(email)) {
+      setLocalError("El correo electrónico no es válido");
+      return;
+    }
+    if (!validatePassword(password)) {
+      setLocalError("La contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+
+    try {
+      const success = await login(email, password);
+      if (success) {
+        navigate('/profile');
+      } else {
+        setLocalError("Credenciales incorrectas");
+      }
+    } catch (error) {
+      setLocalError("Error inesperado al iniciar sesión");
     }
   };
-    return (
-        <>
+
+  return (
     <div className='login'>
       <h2>Login</h2>
-      {authError && <p className="error">{authError}</p>}
-      <form onSubmit={handleSubmit} >
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" disabled={authLoading}>
-          {authLoading ? 'Iniciando Sesión...' : 'Login'}
-        </button>
-      </form>
+
+      {/* Mostrar errores de validación local o del contexto */}
+      {(localError || authError) && (
+        <p className="error">{localError || authError}</p>
+      )}
+
+      {authLoading ? (
+        <Loading message="Iniciando sesión..." />
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength={8}
+          />
+          <button type="submit">
+            Login
+          </button>
+        </form>
+      )}
+
       <p>
-        No tienes cuenta? <Link to="/registro">Regístrate</Link>
+        ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
       </p>
     </div>
-        </>
-    )
-}
+  );
+};
 
-export default Login
+export default Login;
