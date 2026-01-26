@@ -43,6 +43,23 @@ router.get('/usuario/:usuario_id', async (req, res) => {
   }
 });
 
+
+// Obtener producto por ID
+router.get('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM productos WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('Error al obtener producto por ID:', err);
+    res.status(500).json({ message: 'Error en el servidor' });
+  }
+});
+
+
 // ✅ Actualizar producto (PUT)
 router.put('/:id', async (req, res) => {
   const { id } = req.params;

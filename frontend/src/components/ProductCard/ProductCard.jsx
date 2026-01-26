@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import api from '../../services/api';
 
-const ProductCard = ({ product, onOpenModal, addToCart, isFavorite }) => {
+const ProductCard = ({ product, onOpenModal, addToCart, isFavorite, onFavoriteChange }) => {
   const navigate = useNavigate();
   const { user } = useContext(UserContext);
 
   // ✅ Lógica para gestionar favoritos
   const handleFavorite = async (e) => {
-    e.stopPropagation(); // Evita abrir el modal al hacer clic en el botón
+    e.stopPropagation(); // Evita abrir el modal
     if (!user) {
       navigate('/ingreso'); // Redirige si no hay sesión
       return;
@@ -29,6 +29,8 @@ const ProductCard = ({ product, onOpenModal, addToCart, isFavorite }) => {
           producto_id: product.id
         });
       }
+      // ✅ Actualizar favoritos en la vista
+      if (onFavoriteChange) onFavoriteChange();
     } catch (error) {
       console.error('Error al gestionar favorito:', error);
     }
@@ -46,7 +48,6 @@ const ProductCard = ({ product, onOpenModal, addToCart, isFavorite }) => {
           src={product.imagen} // ✅ Adaptado para datos del backend
           style={{ height: '180px', objectFit: 'cover' }}
         />
-
         {/* ❤️ Botón de favoritos */}
         <Button
           variant="light"
@@ -59,26 +60,26 @@ const ProductCard = ({ product, onOpenModal, addToCart, isFavorite }) => {
       </div>
 
       <Card.Body className="d-flex flex-column">
-        <div className="d-flex align-items-baseline gap-2">
-          <h5 className="fw-bold mb-0">
-            ${product.precio?.toLocaleString('es-CL', { minimumFractionDigits: 2 }) || '0.00'}
-          </h5>
-        </div>
-
+        <h5 className="fw-bold mb-0">
+          ${product.precio?.toLocaleString('es-CL', { minimumFractionDigits: 2 }) || '0.00'}
+        </h5>
         <Card.Title className="fs-6 mt-1 mb-1 fw-normal text-dark text-truncate">
           {product.nombre}
         </Card.Title>
+        <Card.Text className="text-muted small mb-3">{product.categoria}</Card.Text>
 
-        <Card.Text className="text-muted small mb-3">
-          {product.categoria}
-        </Card.Text>
-
+        {/* ✅ Botón para agregar al carrito con datos normalizados */}
         <Button
           variant="dark"
           className="mt-auto w-100 rounded-1 py-2 fw-bold small"
           onClick={(e) => {
-            e.stopPropagation(); // Evita abrir el modal
-            addToCart(product);
+            e.stopPropagation();
+            addToCart({
+              id: product.id,
+              name: product.nombre,   // ✅ Normalizamos nombre
+              price: product.precio,  // ✅ Normalizamos precio
+              quantity: 1
+            });
           }}
         >
           Agregar al carrito
@@ -89,5 +90,8 @@ const ProductCard = ({ product, onOpenModal, addToCart, isFavorite }) => {
 };
 
 export default ProductCard;
+
+
+
 
 

@@ -9,17 +9,20 @@ describe('MercadoUrbano API', () => {
     expect(res.text).toContain('Bienvenido');
   });
 
-  it('POST /usuarios debe registrar usuario', async () => {
-    const res = await request(app)
-      .post('/usuarios')
-      .send({ nombre: 'Juan', email: 'juan@correo.com', password: '123456' });
-    expect(res.statusCode).toBe(201);
-  });
+
+it('GET /productos/:id debe devolver el producto correcto', async () => {
+  const res = await request(app)
+    .get('/productos/1') // ID del producto
+    .expect(200);
+
+  expect(res.body.nombre).toBe('Coconut Bowls Set');
+});
+
 
   it('POST /auth/login debe devolver JWT', async () => {
     const res = await request(app)
       .post('/auth/login')
-      .send({ email: 'juan@correo.com', password: '123456' });
+      .send({ email: 'cagv.1995@gmail.com', password: '12345678' });
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('token');
   });

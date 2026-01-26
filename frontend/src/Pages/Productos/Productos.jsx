@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { Container, Row, Col, Form, Nav } from 'react-bootstrap';
 import { CartContext } from "../../context/CartContext";
+import { UserContext } from "../../context/UserContext";
 import api from '../../services/api';
 
 // Componentes
@@ -10,44 +10,21 @@ import ProductModal from '../../components/ProductModal/ProductModal';
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [filtroMarca, setFiltroMarca] = useState('Todos');
   const [orden, setOrden] = useState('default');
   const [busqueda, setBusqueda] = useState('');
-
-  // Modal
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const { addToCart } = useContext(CartContext);
-
-  // ❤️ Favoritos
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("favorites");
-    return saved ? JSON.parse(saved) : [];
-  });
-
-  const toggleFavorite = (product) => {
-    setFavorites(prev => {
-      const exists = prev.some(fav => fav.id === product.id);
-      const updated = exists
-        ? prev.filter(fav => fav.id !== product.id)
-        : [...prev, product];
-
-      localStorage.setItem("favorites", JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  const handleOpenModal = (prod) => {
-    setSelectedProduct(prod);
-    setShowModal(true);
-  };
+  const { user } = useContext(UserContext);
 
   // ✅ Obtener productos desde la API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await api.get('/productos'); // GET desde el backend
+        const response = await api.get('/productos');
         setProductos(response.data);
       } catch (error) {
         console.error('Error al obtener productos:', error);
@@ -55,6 +32,27 @@ const Productos = () => {
     };
     fetchProductos();
   }, []);
+
+  // ✅ Obtener favoritos del usuario
+  const fetchFavoritos = async () => {
+    if (user) {
+      try {
+        const response = await api.get(`/favoritos/${user.id}`);
+        setFavorites(response.data);
+      } catch (error) {
+        console.error('Error al obtener favoritos:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchFavoritos();
+  }, [user]);
+
+  const handleOpenModal = (prod) => {
+    setSelectedProduct(prod);
+    setShowModal(true);
+  };
 
   // 🔥 Categorías dinámicas
   const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
@@ -88,7 +86,6 @@ const Productos = () => {
         <Col md={3} lg={2} className="mb-4">
           <div className="bg-white p-3 rounded shadow-sm">
             <h6 className="fw-bold mb-3 border-bottom pb-2">FILTRAR</h6>
-
             <Nav className="flex-column mb-3">
               {categorias.map(category => (
                 <Nav.Link
@@ -102,7 +99,6 @@ const Productos = () => {
                 </Nav.Link>
               ))}
             </Nav>
-
             <Form.Control
               type="text"
               placeholder="Buscar..."
@@ -122,8 +118,8 @@ const Productos = () => {
                   product={prod}
                   onOpenModal={handleOpenModal}
                   addToCart={addToCart}
-                  toggleFavorite={toggleFavorite}
                   isFavorite={favorites.some(f => f.id === prod.id)}
+                  onFavoriteChange={fetchFavoritos} // ✅ Actualiza favoritos en tiempo real
                 />
               </Col>
             ))}
@@ -143,3 +139,4 @@ const Productos = () => {
 };
 
 export default Productos;
+

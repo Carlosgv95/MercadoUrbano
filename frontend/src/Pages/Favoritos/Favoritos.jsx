@@ -12,7 +12,6 @@ const Favoritos = () => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState([]);
 
-  // ✅ Redirige si no hay sesión
   useEffect(() => {
     if (!user) {
       navigate('/ingreso');
@@ -21,26 +20,12 @@ const Favoritos = () => {
     }
   }, [user, navigate]);
 
-  // ✅ Obtener favoritos desde la API
   const fetchFavoritos = async () => {
     try {
       const response = await api.get(`/favoritos/${user.id}`);
       setFavorites(response.data);
     } catch (error) {
       console.error('Error al obtener favoritos:', error);
-    }
-  };
-
-  // ✅ Eliminar favorito
-  const handleRemoveFavorite = async (product) => {
-    try {
-      await api.delete('/favoritos', {
-        data: { usuario_id: user.id, producto_id: product.id }
-      });
-      // Actualizar lista
-      setFavorites(prev => prev.filter(fav => fav.id !== product.id));
-    } catch (error) {
-      console.error('Error al eliminar favorito:', error);
     }
   };
 
@@ -57,17 +42,9 @@ const Favoritos = () => {
                 product={product}
                 onOpenModal={() => {}}
                 addToCart={addToCart}
-                isFavorite={true}
+                isFavorite={true} // ✅ Siempre favorito en esta vista
+                onFavoriteChange={fetchFavoritos} // ✅ Actualiza lista al quitar
               />
-              {/* Botón para eliminar favorito */}
-              <div className="text-center mt-2">
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={() => handleRemoveFavorite(product)}
-                >
-                  Eliminar de favoritos
-                </button>
-              </div>
             </Col>
           ))}
         </Row>

@@ -1,13 +1,17 @@
+
 import { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
+import { UserContext } from "../../context/UserContext";
 import Button from "react-bootstrap/Button";
 import Table from "react-bootstrap/Table";
 import Toastify from "toastify-js";
 import Swal from "sweetalert2";
+import api from "../../services/api";
 
 const Cart = () => {
   const { cartItems, removeFromCart, clearCart, increaseQty, decreaseQty, total } =
     useContext(CartContext);
+  const { user } = useContext(UserContext); // ✅ Obtenemos el usuario desde el contexto
 
   // Formatear precios
   const formatPrice = (value) =>
@@ -54,8 +58,21 @@ const Cart = () => {
     }).showToast();
   };
 
-  // Comprar productos
-  const handleBuy = () => {
+  // Comprar productos y enviar orden al backend
+  const handleBuy = async () => {
+    // ✅ Validación: usuario no logueado
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Debes iniciar sesión",
+        text: "Por favor, inicia sesión para completar la compra.",
+        confirmButtonText: "Ir a Ingresar",
+      }).then(() => {
+        window.location.href = "/ingreso"; // Redirige a la página de login
+      });
+      return;
+    }
+
     if (cartItems.length === 0) {
       Swal.fire({
         icon: "error",
@@ -65,51 +82,33 @@ const Cart = () => {
       return;
     }
 
-    Swal.fire({
-      title: "Completa tu orden",
-      html: `<form id="form" class="form">
-        <div class="form-group">
-          <label for="name">Nombre</label>
-          <input type="text" class="form-control" id="name" placeholder="Ingresa tu nombre">
-        </div>
-        <div class="form-group">
-          <label for="email">Correo</label>
-          <input type="email" class="form-control" id="email" placeholder="Ingresa tu correo">
-        </div>
-      </form>`,
-      showCancelButton: true,
-      confirmButtonText: "Enviar",
-      showLoaderOnConfirm: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
+    try {
+      // ✅ Enviar orden al backend
+      const response = await api.post("/ordenes", {
+        usuario_id: user.id,
+        productos: cartItems,
+        total: total,
+      });
 
-        Swal.fire({
-          title: "Resumen de la orden",
-          html: `
-            <p><b>Fecha:</b> ${new Date().toLocaleString()}</p>
-            <p><b>Comprador:</b> ${name} (${email})</p>
-            <h3>Productos</h3>
-            <ul>
-              ${cartItems
-                .map((p) => `<li>${p.name} - Cantidad: ${p.quantity}</li>`)
-                .join("")}
-            </ul>
-            <h3>Total</h3>
-            <p>${formatPrice(total)}</p>
-          `,
-        }).then(() => {
-          clearCart();
-          Swal.fire({
-            icon: "success",
-            title: "Tu orden ha sido enviada",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        });
-      }
-    });
+      Swal.fire({
+        icon: "success",
+        title: "Orden creada con éxito",
+        html: `
+          <p><b>ID de orden:</b> ${response.data.orden_id}</p>
+          <p><b>Total:</b> ${formatPrice(total)}</p>
+        `,
+        confirmButtonText: "Ok",
+      });
+
+      clearCart();
+    } catch (error) {
+      console.error("Error al crear orden:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo completar la compra. Intenta nuevamente.",
+      });
+    }
   };
 
   return (
@@ -134,6 +133,7 @@ const Cart = () => {
                 <tr key={item.id}>
                   <td>{item.name}</td>
                   <td>{formatPrice(item.price)}</td>
+                  <td>{formatPrice(item.price * item.quantity)}</td>
                   <td>
                     <Button
                       variant="light"
@@ -181,3 +181,4 @@ const Cart = () => {
 };
 
 export default Cart;
+

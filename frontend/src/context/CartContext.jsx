@@ -58,10 +58,7 @@ export const CartProvider = ({ children }) => {
   };
 
   // Calcular total
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
     <CartContext.Provider
