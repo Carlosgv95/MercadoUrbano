@@ -30,13 +30,7 @@ const Navbar = () => {
           <Nav className="me-auto my-2 my-lg-0" navbarScroll>
             <Nav.Link as={NavLink} to="/ingreso">Ingresar 🔐</Nav.Link>
             <Nav.Link as={NavLink} to="/registro">Registrate 🔐</Nav.Link>
-            <NavDropdown title="Categorias" id="navbarScrollingDropdown">
-              <NavDropdown.Item as={NavLink} to="/productos">Productos</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">Servicios</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">Contactenos</NavDropdown.Item>
-            </NavDropdown>
-
+            <Nav.Link as={NavLink} to="/productos">Productos </Nav.Link>
             <Nav.Link as={NavLink} to="/carrito">
               🛒 {cartCount > 0 && (
                 <>
@@ -48,17 +42,6 @@ const Navbar = () => {
               )}
             </Nav.Link>
           </Nav>
-
-          <Form className="d-flex" onSubmit={handleSearch}>
-            <Form.Control
-              type="search"
-              placeholder="Buscar productos..."
-              className="me-2"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-            <Button variant="outline-dark" type="submit">Buscar</Button>
-          </Form>
         </NavbarBS.Collapse>
       </Container>
     </NavbarBS>
@@ -66,4 +49,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
