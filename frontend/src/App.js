@@ -10,7 +10,8 @@ import Cart from './components/Cart/Cart';
 import Perfil from './Pages/Perfil/Perfil';
 import Productos from './Pages/Productos/Productos';
 import CrearPublicacion from './Pages/CrearPublicacion/CrearPublicacion';
-import MisProductos from './Pages/MisProductos/MisProductos'; // ✅ Nueva vista
+import MisProductos from './Pages/MisProductos/MisProductos';
+import Favoritos from './Pages/Favoritos/Favoritos';
 import './App.css'; // ✅ CSS global para layout
 
 const App = () => {
@@ -29,7 +30,8 @@ const App = () => {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/productos" element={<Productos />} />
                 <Route path="/crear-publicacion" element={<CrearPublicacion />} />
-                <Route path="/mis-productos" element={<MisProductos />} /> {/* ✅ Nueva ruta */}
+                <Route path="/mis-productos" element={<MisProductos />} /> 
+                <Route path="/favoritos" element={<Favoritos />} />
               </Routes>
             </main>
             <Footer />

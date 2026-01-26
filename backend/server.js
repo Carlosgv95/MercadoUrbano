@@ -10,11 +10,13 @@ const productRoutes = require('./routes/productRoutes');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const favoritosRoutes = require('./routes/favoritosRoutes')
 
 const app = express();
 const port = process.env.PORT || 3001; // Usa el puerto del .env o 3000 por defecto
 
 // --- Middlewares Globales ---
+app.use('/favoritos', favoritosRoutes);
 
 app.use(cors({
   origin: 'http://localhost:3001', // o el puerto donde corre tu React (5173 si usas Vite)

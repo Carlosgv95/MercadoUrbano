@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Carousel, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import products from "../../Data/products";
 import { CartContext } from '../../context/CartContext';
-// Importamos los mismos componentes
+import api from '../../services/api';
+
+// Componentes
 import ProductCard from '../../components/ProductCard/ProductCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 
@@ -16,23 +17,37 @@ const chunkArray = (arr, size) => {
 };
 
 const ProductSlider = ({ title }) => {
+  const [productos, setProductos] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const { addToCart } = useContext(CartContext);
 
-  const handleOpenModal = (p) => { 
-    setSelectedProduct(p); 
-    setShowModal(true); 
+  // ✅ Obtener productos desde la API
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await api.get('/productos'); // GET desde el backend
+        setProductos(response.data);
+      } catch (error) {
+        console.error('Error al obtener productos:', error);
+      }
+    };
+    fetchProductos();
+  }, []);
+
+  const handleOpenModal = (p) => {
+    setSelectedProduct(p);
+    setShowModal(true);
   };
 
   const toggleFavorite = (p) => {
-    setFavorites(prev => 
+    setFavorites(prev =>
       prev.find(x => x.id === p.id) ? prev.filter(x => x.id !== p.id) : [...prev, p]
     );
   };
 
-  const productSlides = chunkArray(products, 4);
+  const productSlides = chunkArray(productos, 4); // ✅ Ahora usamos productos del backend
 
   return (
     <Container className="my-5">
@@ -51,7 +66,7 @@ const ProductSlider = ({ title }) => {
                     product={product}
                     onOpenModal={handleOpenModal}
                     addToCart={addToCart}
-                    toggleFavorite={toggleFavorite} // Aquí sí pasamos favoritos
+                    toggleFavorite={toggleFavorite}
                     isFavorite={favorites.some(f => f.id === product.id)}
                   />
                 </Col>
@@ -61,12 +76,12 @@ const ProductSlider = ({ title }) => {
         ))}
       </Carousel>
 
-      {/* EL MISMO MODAL QUE EN LA OTRA VISTA */}
-      <ProductModal 
-        show={showModal} 
-        onHide={() => setShowModal(false)} 
-        product={selectedProduct} 
-        addToCart={addToCart} 
+      {/* Modal para ver detalles */}
+      <ProductModal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        product={selectedProduct}
+        addToCart={addToCart}
       />
 
       <style>{`
