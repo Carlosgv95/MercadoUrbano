@@ -12,10 +12,16 @@ const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
-const port = process.env.PORT || 3000; // Usa el puerto del .env o 3000 por defecto
+const port = process.env.PORT || 3001; // Usa el puerto del .env o 3000 por defecto
 
 // --- Middlewares Globales ---
-app.use(cors()); // Habilita CORS para permitir peticiones desde el frontend
+
+app.use(cors({
+  origin: 'http://localhost:3001', // o el puerto donde corre tu React (5173 si usas Vite)
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+ // Habilita CORS para permitir peticiones desde el frontend
 app.use(express.json()); // Para parsear cuerpos de petición JSON
 app.use(requestLogger); // Middleware para registrar todas las peticiones recibidas
 

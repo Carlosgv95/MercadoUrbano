@@ -1,6 +1,8 @@
+
 import { useState } from 'react';
 import { Form, Button, Row, Col, Alert, Card, Container } from 'react-bootstrap';
-import Loading from "../Loading/Loading"; // importa tu componente Loading
+import Loading from "../Loading/Loading";
+import api from "../../services/api"; // Importa tu instancia Axios
 
 // Funciones de validación
 const validateEmail = (email) => {
@@ -13,20 +15,27 @@ const validatePassword = (password) => {
 };
 
 const Registro = () => {
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    nombre: "",
+    apellido: "",
+    telefono: "",
+    direccion: "",
+    email: "",
+    password: ""
+  });
   const [authError, setAuthError] = useState(null);
-  const [isLoading, setIsLoading] = useState(false); // estado para Loading
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Validaciones antes de guardar
+      // Validaciones antes de enviar
       if (!validateEmail(formData.email)) {
         setAuthError("El correo electrónico no es válido");
         setIsLoading(false);
@@ -38,27 +47,29 @@ const Registro = () => {
         return;
       }
 
-      // Recuperar usuarios previos del localStorage
-      const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+      // Llamada al backend para registrar usuario
+      const response = await api.post("/usuarios", formData);
 
-      // Verificar si el correo ya existe
-      const existe = usuarios.some(u => u.email === formData.email);
-      if (existe) {
-        setAuthError("Este correo ya está registrado");
-        setIsLoading(false);
-        return;
-      }
-
-      // Agregar el nuevo usuario
-      usuarios.push(formData);
-
-      // Guardar nuevamente en localStorage como JSON
-      localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-      alert("✅ Registro exitoso 🚀");
+      alert("✅ Registro exitoso en la base de datos 🚀");
       setAuthError(null);
+      console.log("Usuario registrado:", response.data);
+
+      // Opcional: limpiar formulario
+      setFormData({
+        nombre: "",
+        apellido: "",
+        telefono: "",
+        direccion: "",
+        email: "",
+        password: ""
+      });
     } catch (error) {
-      setAuthError("Error al guardar el usuario");
+      
+  console.error("Error completo:", error);
+  console.error("Error response:", error.response);
+  console.error("Error request:", error.request);
+  setAuthError(error.response?.data?.message || "Error al registrar el usuario");
+
     } finally {
       setIsLoading(false);
     }
@@ -88,6 +99,43 @@ const Registro = () => {
                       type="text"
                       name="nombre"
                       placeholder="Ingrese su nombre"
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Apellido</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="apellido"
+                      placeholder="Ingrese su apellido"
+                      value={formData.apellido}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Teléfono</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="telefono"
+                      placeholder="Ingrese su teléfono"
+                      value={formData.telefono}
+                      onChange={handleChange}
+                      required
+                    />
+                  </Form.Group>
+
+                  <Form.Group className="mb-3">
+                    <Form.Label>Dirección</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="direccion"
+                      placeholder="Ingrese su dirección"
+                      value={formData.direccion}
                       onChange={handleChange}
                       required
                     />
@@ -99,6 +147,7 @@ const Registro = () => {
                       type="email"
                       name="email"
                       placeholder="ejemplo@correo.com"
+                      value={formData.email}
                       onChange={handleChange}
                       required
                     />
@@ -110,6 +159,7 @@ const Registro = () => {
                       type="password"
                       name="password"
                       placeholder="Ingrese su contraseña"
+                      value={formData.password}
                       onChange={handleChange}
                       required
                       minLength={8}

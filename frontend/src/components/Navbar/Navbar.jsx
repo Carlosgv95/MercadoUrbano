@@ -1,25 +1,29 @@
+
 import { useContext, useState } from "react";
 import { CartContext } from "../../context/CartContext";
+import { UserContext } from "../../context/UserContext";
 import { Link, NavLink } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import NavbarBS from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { cartItems } = useContext(CartContext);
+  const { user, logout } = useContext(UserContext);
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const [query, setQuery] = useState("");
-  const handleSearch = (e) => {
-    e.preventDefault();
-    console.log("Buscando:", query);
-    // aquí podrías redirigir a /productos?search=query
-  };
+  
+const navigate = useNavigate();
+
+const handleLogout = () => {
+  logout();
+  navigate("/"); // Redirige al home
+};
+
 
   return (
     <NavbarBS expand="lg" bg="success" data-bs-theme="dark">
@@ -28,9 +32,19 @@ const Navbar = () => {
         <NavbarBS.Toggle aria-controls="navbarScroll" />
         <NavbarBS.Collapse id="navbarScroll">
           <Nav className="me-auto my-2 my-lg-0" navbarScroll>
-            <Nav.Link as={NavLink} to="/ingreso">Ingresar 🔐</Nav.Link>
-            <Nav.Link as={NavLink} to="/registro">Registrate 🔐</Nav.Link>
-            <Nav.Link as={NavLink} to="/productos">Productos </Nav.Link>
+            {!user && (
+              <>
+                <Nav.Link as={NavLink} to="/ingreso">Ingresar 🔐</Nav.Link>
+                <Nav.Link as={NavLink} to="/registro">Registrate 🔐</Nav.Link>
+              </>
+            )}
+            {user && (
+              <>
+                <Nav.Link as={NavLink} to="/perfil">Mi Perfil 👤</Nav.Link>
+                <Nav.Link as="button" onClick={logout} className="btn btn-link text-light">Cerrar sesión 🔓</Nav.Link>
+              </>
+            )}
+            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
             <Nav.Link as={NavLink} to="/carrito">
               🛒 {cartCount > 0 && (
                 <>
