@@ -24,7 +24,6 @@ const Footer = () => {
           <ul>
             <li><Link to="/ingreso">Ingresar</Link></li>
             <li><Link to="/registro">Regístrate</Link></li>
-            <li><Link to="/perfil">Mi perfil</Link></li>
           </ul>
         </div>
         <div>

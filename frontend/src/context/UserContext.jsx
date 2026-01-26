@@ -17,22 +17,24 @@ export const UserProvider = ({ children }) => {
     }
   }, []);
 
-  const login = async (email, password) => {
-    setAuthLoading(true);
-    setAuthError(null);
-    try {
-      const { data } = await api.post('/auth/login', { email, password });
-      setUser(data.user);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      localStorage.setItem('token', data.token); // si tu API devuelve token
-      return true;
-    } catch (err) {
-      setAuthError(err.response?.data?.message || 'Error en login');
-      return false;
-    } finally {
-      setAuthLoading(false);
-    }
-  };
+
+const login = async (email, password) => {
+  setAuthLoading(true);
+  setAuthError(null);
+  try {
+    const { data } = await api.post('/auth/login', { email, password });
+    setUser(data.user);
+    localStorage.setItem('user', JSON.stringify(data.user));
+    localStorage.setItem('token', data.token);
+    return true;
+  } catch (err) {
+    setAuthError(err.response?.data?.message || 'Error en login');
+    return false;
+  } finally {
+    setAuthLoading(false);
+  }
+};
+
 
   const register = async (formData) => {
     try {

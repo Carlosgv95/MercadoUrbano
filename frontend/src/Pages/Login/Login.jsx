@@ -38,7 +38,7 @@ const Login = () => {
     try {
       const success = await login(email, password);
       if (success) {
-        navigate('/profile');
+        navigate('/perfil');
       } else {
         setLocalError("Credenciales incorrectas");
       }

@@ -1,87 +1,107 @@
-import { Container, Row, Col, Nav, Form, Button, Image, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+
+import { Container, Row, Col, Nav, Button, Card, ListGroup } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { UserContext } from '../../context/UserContext';
+import api from '../../services/api';
 
 const Perfil = () => {
+  const { user, logout } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: user?.nombre || '',
+    apellido: user?.apellido || '',
+    telefono: user?.telefono || '',
+    direccion: user?.direccion || '',
+    correo: user?.correo || ''
+  });
+
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar tu cuenta?')) {
+      try {
+        await api.delete(`/usuarios/${user.id}`);
+        alert('✅ Cuenta eliminada correctamente');
+        logout();
+        navigate('/');
+      } catch (error) {
+        alert('❌ Error al eliminar la cuenta');
+        console.error(error);
+      }
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await api.put(`/usuarios/${user.id}`, formData);
+      alert('✅ Perfil actualizado correctamente');
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      setIsEditing(false);
+      window.location.reload();
+    } catch (error) {
+      alert('❌ Error al actualizar el perfil');
+      console.error(error);
+    }
+  };
+
   return (
     <Container fluid className="p-0">
       <Row className="g-0" style={{ minHeight: '90vh' }}>
-        
-        
         <Col md={3} lg={2} className="bg-white border-end p-4">
           <h4 className="text-primary fw-bold mb-4">MI PERFIL</h4>
           <Nav className="flex-column gap-3">
-            <Nav.Link as={Link} to="/mis-productos" className="text-dark d-flex align-items-center">
-              🎲 <span className="ms-2">Mis Productos</span>
-            </Nav.Link>
-            <Nav.Link as={Link} to="/favoritos" className="text-dark d-flex align-items-center">
-              ❤️ <span className="ms-2">Mis Favoritos</span>
-            </Nav.Link>
-            <Nav.Link as={Link} to="/crear-publicacion" className="text-dark d-flex align-items-center">
-              🏪 <span className="ms-2">Crear Publicacion</span>
-            </Nav.Link>
+            <Nav.Link as={Link} to="/mis-productos">🎲 Mis Productos</Nav.Link>
+            <Nav.Link as={Link} to="/favoritos">❤️ Mis Favoritos</Nav.Link>
+            <Nav.Link as={Link} to="/crear-publicacion">🏪 Crear Publicación</Nav.Link>
           </Nav>
         </Col>
 
-        
         <Col md={9} lg={10} className="bg-light p-5">
-          <Card className="border-0 shadow-sm p-4">
-            
-            
-            <div className="d-flex align-items-center justify-content-between mb-5">
-              <div className="d-flex gap-2">
-                <Button variant="primary" size="sm">Subir Foto</Button>
-                <Button variant="danger" size="sm">Eliminar Foto</Button>
-              </div>
-              <Image 
-                src="https://via.placeholder.com/100" 
-                roundedCircle 
-                style={{ width: '80px', height: '80px', border: '2px solid #6f42c1' }} 
-              />
-            </div>
+          <Card className="shadow-sm p-4">
+            <Card.Body>
+              <h4 className="mb-4">Datos del Usuario</h4>
 
-          
-            <Form>
-              <Row className="mb-4">
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Nombre</Form.Label>
-                  <Form.Control type="text" placeholder="Juan" className="bg-light border-0" />
-                </Form.Group>
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Apellido</Form.Label>
-                  <Form.Control type="text" placeholder="Perez" className="bg-light border-0" />
-                </Form.Group>
-              </Row>
+              {!isEditing ? (
+                <>
+                  <ListGroup variant="flush">
+                    <ListGroup.Item><strong>Nombre:</strong> {user?.nombre}</ListGroup.Item>
+                    <ListGroup.Item><strong>Apellido:</strong> {user?.apellido}</ListGroup.Item>
+                    <ListGroup.Item><strong>Teléfono:</strong> {user?.telefono}</ListGroup.Item>
+                    <ListGroup.Item><strong>Dirección:</strong> {user?.direccion}</ListGroup.Item>
+                    <ListGroup.Item><strong>Email:</strong> {user?.correo}</ListGroup.Item>
+                  </ListGroup>
 
-              <Row className="mb-4">
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Teléfono</Form.Label>
-                  <Form.Control type="text" placeholder="123456789" className="bg-light border-0" />
-                </Form.Group>
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Dirección</Form.Label>
-                  <Form.Control type="text" placeholder="Calle falsa 123" className="bg-light border-0" />
-                </Form.Group>
-              </Row>
+                  <div className="d-flex flex-column align-items-center gap-3 mt-4">
+                    <Button variant="secondary" onClick={() => setIsEditing(true)}>Editar Perfil</Button>
+                    <Button variant="primary" onClick={handleLogout}>Cerrar Sesión</Button>
+                    <Button variant="danger" onClick={handleDeleteAccount}>Eliminar cuenta</Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <form>
+                    <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} className="form-control mb-2" />
+                    <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} className="form-control mb-2" />
+                    <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} className="form-control mb-2" />
+                    <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} className="form-control mb-2" />
+                    <input type="email" name="correo" value={formData.correo} onChange={handleChange} className="form-control mb-2" />
+                  </form>
 
-              <Row className="mb-4">
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Email</Form.Label>
-                  <Form.Control type="email" placeholder="juan@correo.com" className="bg-light border-0" />
-                </Form.Group>
-                <Form.Group as={Col} md="6">
-                  <Form.Label className="text-muted small">Contraseña</Form.Label>
-                  <Form.Control type="password" placeholder="********" className="bg-light border-0" />
-                </Form.Group>
-              </Row>
-
-              {/* Botones de Acción */}
-              <div className="d-flex flex-column align-items-center gap-3 mt-4">
-                <Button variant="primary" className="px-5 py-2 w-35">Guardar Cambios</Button>
-                <Button variant="primary" className="px-5 py-2 w-35">Cerrar Sesion</Button>
-                <Button variant="danger" className="px-5 py-2 w-30">Eliminar cuenta</Button>
-              </div>
-            </Form>
-
+                  <div className="d-flex flex-column align-items-center gap-3 mt-4">
+                    <Button variant="primary" onClick={handleSave}>Guardar Cambios</Button>
+                    <Button variant="secondary" onClick={() => setIsEditing(false)}>Cancelar</Button>
+                  </div>
+                </>
+              )}
+            </Card.Body>
           </Card>
         </Col>
       </Row>
@@ -90,3 +110,6 @@ const Perfil = () => {
 };
 
 export default Perfil;
+
+
+

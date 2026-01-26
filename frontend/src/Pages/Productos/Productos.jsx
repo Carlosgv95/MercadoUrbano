@@ -1,14 +1,15 @@
-import React, { useState, useMemo, useContext } from 'react';
+
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { Container, Row, Col, Form, Nav } from 'react-bootstrap';
-import products from "../../Data/products";
 import { CartContext } from "../../context/CartContext";
+import api from '../../services/api';
 
 // Componentes
 import ProductCard from '../../components/ProductCard/ProductCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
 
 const Productos = () => {
-  const [productos] = useState(products);
+  const [productos, setProductos] = useState([]);
   const [filtroMarca, setFiltroMarca] = useState('Todos');
   const [orden, setOrden] = useState('default');
   const [busqueda, setBusqueda] = useState('');
@@ -20,50 +21,62 @@ const Productos = () => {
   const { addToCart } = useContext(CartContext);
 
   // ❤️ Favoritos
-const [favorites, setFavorites] = useState(() => {
-  const saved = localStorage.getItem("favorites");
-  return saved ? JSON.parse(saved) : [];
-});
-
-const toggleFavorite = (product) => {
-  setFavorites(prev => {
-    const exists = prev.some(fav => fav.id === product.id);
-    const updated = exists
-      ? prev.filter(fav => fav.id !== product.id)
-      : [...prev, product];
-
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    return updated;
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem("favorites");
+    return saved ? JSON.parse(saved) : [];
   });
-};
 
+  const toggleFavorite = (product) => {
+    setFavorites(prev => {
+      const exists = prev.some(fav => fav.id === product.id);
+      const updated = exists
+        ? prev.filter(fav => fav.id !== product.id)
+        : [...prev, product];
+
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   const handleOpenModal = (prod) => {
     setSelectedProduct(prod);
     setShowModal(true);
   };
 
+  // ✅ Obtener productos desde la API
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await api.get('/productos'); // GET desde el backend
+        setProductos(response.data);
+      } catch (error) {
+        console.error('Error al obtener productos:', error);
+      }
+    };
+    fetchProductos();
+  }, []);
+
   // 🔥 Categorías dinámicas
-  const categorias = ['Todos', ...new Set(productos.map(p => p.category))];
+  const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
 
   // 🔥 Filtros + búsqueda + ordenamiento
   const productosFiltrados = useMemo(() => {
     let res = [...productos];
 
     if (filtroMarca !== 'Todos') {
-      res = res.filter(p => p.category === filtroMarca);
+      res = res.filter(p => p.categoria === filtroMarca);
     }
 
     if (busqueda.trim() !== '') {
       res = res.filter(p =>
-        p.name.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.category.toLowerCase().includes(busqueda.toLowerCase())
+        p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+        p.categoria.toLowerCase().includes(busqueda.toLowerCase())
       );
     }
 
-    if (orden === 'precio-asc') res.sort((a, b) => a.price - b.price);
-    else if (orden === 'precio-desc') res.sort((a, b) => b.price - a.price);
-    else if (orden === 'alfa') res.sort((a, b) => a.name.localeCompare(b.name));
+    if (orden === 'precio-asc') res.sort((a, b) => a.precio - b.precio);
+    else if (orden === 'precio-desc') res.sort((a, b) => b.precio - a.precio);
+    else if (orden === 'alfa') res.sort((a, b) => a.nombre.localeCompare(b.nombre));
 
     return res;
   }, [productos, filtroMarca, orden, busqueda]);
@@ -71,7 +84,6 @@ const toggleFavorite = (product) => {
   return (
     <Container fluid className="bg-light min-vh-100 py-4 px-lg-5">
       <Row>
-
         {/* --- FILTROS --- */}
         <Col md={3} lg={2} className="mb-4">
           <div className="bg-white p-3 rounded shadow-sm">
@@ -112,7 +124,6 @@ const toggleFavorite = (product) => {
                   addToCart={addToCart}
                   toggleFavorite={toggleFavorite}
                   isFavorite={favorites.some(f => f.id === prod.id)}
-
                 />
               </Col>
             ))}
