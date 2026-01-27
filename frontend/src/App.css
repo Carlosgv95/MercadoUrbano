@@ -15,3 +15,17 @@ html, body {
   padding: 20px; /* Opcional: espacio interno */
 }
 
+.swal2-border-radius {
+  border-radius: 12px !important;
+}
+
+.btn-confirm {
+  background-color: #3483fa !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 16px !important;
+  font-weight: 500;
+  border-radius: 6px;
+}
+
+.carousel-image { height: 400px; object-fit: cover; width: 100%; }

@@ -60,7 +60,6 @@ const Perfil = () => {
           <Nav className="flex-column gap-3">
             <Nav.Link as={Link} to="/mis-productos">🎲 Mis Productos</Nav.Link>
             <Nav.Link as={Link} to="/favoritos">❤️ Mis Favoritos</Nav.Link>
-            <Nav.Link as={Link} to="/crear-publicacion">🏪 Crear Publicación</Nav.Link>
           </Nav>
         </Col>
 

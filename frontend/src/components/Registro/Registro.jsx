@@ -1,8 +1,9 @@
-
 import { useState } from 'react';
 import { Form, Button, Row, Col, Alert, Card, Container } from 'react-bootstrap';
 import Loading from "../Loading/Loading";
-import api from "../../services/api"; // Importa tu instancia Axios
+import api from "../../services/api";
+import Swal from "sweetalert2"; 
+
 
 // Funciones de validación
 const validateEmail = (email) => {
@@ -11,7 +12,7 @@ const validateEmail = (email) => {
 };
 
 const validatePassword = (password) => {
-  return password.length >= 8; // mínimo 8 caracteres
+  return password.length >= 8;
 };
 
 const Registro = () => {
@@ -23,6 +24,7 @@ const Registro = () => {
     email: "",
     password: ""
   });
+
   const [authError, setAuthError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -35,7 +37,7 @@ const Registro = () => {
     setIsLoading(true);
 
     try {
-      // Validaciones antes de enviar
+      // Validaciones
       if (!validateEmail(formData.email)) {
         setAuthError("El correo electrónico no es válido");
         setIsLoading(false);
@@ -47,14 +49,26 @@ const Registro = () => {
         return;
       }
 
-      // Llamada al backend para registrar usuario
+      // Enviar datos al backend
       const response = await api.post("/usuarios", formData);
 
-      alert("✅ Registro exitoso en la base de datos 🚀");
+      // 🔵 Swal.fire profesional
+      Swal.fire({
+        icon: "success",
+        title: "Registro exitoso",
+        text: "Tu cuenta ha sido creada correctamente",
+        confirmButtonText: "Continuar",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
+
       setAuthError(null);
       console.log("Usuario registrado:", response.data);
 
-      // Opcional: limpiar formulario
+      // Limpiar formulario
       setFormData({
         nombre: "",
         apellido: "",
@@ -63,13 +77,10 @@ const Registro = () => {
         email: "",
         password: ""
       });
-    } catch (error) {
-      
-  console.error("Error completo:", error);
-  console.error("Error response:", error.response);
-  console.error("Error request:", error.request);
-  setAuthError(error.response?.data?.message || "Error al registrar el usuario");
 
+    } catch (error) {
+      console.error("Error completo:", error);
+      setAuthError(error.response?.data?.message || "Error al registrar el usuario");
     } finally {
       setIsLoading(false);
     }
@@ -182,5 +193,4 @@ const Registro = () => {
 };
 
 export default Registro;
-
 
