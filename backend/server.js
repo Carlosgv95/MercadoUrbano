@@ -21,7 +21,7 @@ const port = process.env.PORT || 10000;
 // --- CORS CORRECTO PARA PRODUCCIÓN ---
 app.use(cors({
   origin: [
-    'http://localhost:3001',                 // Desarrollo local
+    'http://localhost:3001', // Desarrollo local
     'https://mercado-urbano-u3ip.vercel.app' // Frontend en Vercel
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -53,22 +53,11 @@ app.use((req, res) => {
 if (process.env.NODE_ENV !== 'test') {
   app.listen(port, () => {
     console.log(`Servidor MercadoUrbano escuchando en http://localhost:${port}`);
-    console.log('Rutas disponibles:');
-    console.log(`  GET    http://localhost:${port}/productos`);
-    console.log(`  POST   http://localhost:${port}/productos`);
-    console.log(`  GET    http://localhost:${port}/productos/:id`);
-    console.log(`  POST   http://localhost:${port}/usuarios`);
-    console.log(`  POST   http://localhost:${port}/auth/login`);
-    console.log(`  POST   http://localhost:${port}/favoritos`);
-    console.log(`  GET    http://localhost:${port}/favoritos/:usuario_id`);
-    console.log(`  DELETE http://localhost:${port}/favoritos`);
-    console.log(`  POST   http://localhost:${port}/ordenes`);
-    console.log(`  GET    http://localhost:${port}/ordenes/:usuario_id`);
-    console.log(`  GET    http://localhost:${port}/ordenes/detalles/:orden_id`);
   });
 }
 
 module.exports = app;
+
 
 
 
