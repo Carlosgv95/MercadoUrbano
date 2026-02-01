@@ -15,17 +15,20 @@ import Productos from './Pages/Productos/Productos';
 import MisProductos from './Pages/MisProductos/MisProductos';
 import Favoritos from './Pages/Favoritos/Favoritos';
 import NotFound from './Pages/NotFound/NotFound';
+import Terminos from './Pages/Informacion/Terminos';
+import Privacidad from './Pages/Informacion/Privacidad';
+import FAQ from './Pages/Informacion/FAQ';
 
 import Swal from "sweetalert2";
 import './App.css';
 
-let hasShownSwal = false; // ⬅️ evita múltiples popups
+let hasShownSwal = false;
 
 const AppRoutes = () => {
   const { user, userLoaded } = useContext(UserContext);
 
   const protect = (component) => {
-    if (!userLoaded) return null; // ⏳ Espera a que cargue el usuario
+    if (!userLoaded) return null;
 
     if (user) return component;
 
@@ -55,7 +58,13 @@ const AppRoutes = () => {
       <Route path="/carrito" element={<Cart />} />
       <Route path="/productos" element={<Productos />} />
 
-      {/* 🔒 Rutas protegidas */}
+      {/* Páginas informativas */}
+      <Route path="/terminos" element={<Terminos />} />
+      <Route path="/privacidad" element={<Privacidad />} />
+      <Route path="/faq" element={<FAQ />} />
+  
+
+      {/* Rutas protegidas */}
       <Route path="/perfil" element={protect(<Perfil />)} />
       <Route path="/mis-productos" element={protect(<MisProductos />)} />
       <Route path="/favoritos" element={protect(<Favoritos />)} />

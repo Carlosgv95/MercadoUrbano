@@ -15,10 +15,9 @@ const Footer = () => {
           <h4>Ayuda</h4>
           <ul>
             <li><Link to="/faq">Preguntas frecuentes</Link></li>
-            <li><Link to="/contacto">Contacto</Link></li>
-            <li><Link to="/envios">Envíos y devoluciones</Link></li>
           </ul>
         </div>
+
         <div>
           <h4>Cuenta</h4>
           <ul>
@@ -26,6 +25,7 @@ const Footer = () => {
             <li><Link to="/registro">Regístrate</Link></li>
           </ul>
         </div>
+
         <div>
           <h4>Legal</h4>
           <ul>

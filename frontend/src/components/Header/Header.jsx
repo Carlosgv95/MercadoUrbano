@@ -1,60 +1,46 @@
-import Carousel from 'react-bootstrap/Carousel';
+import Carousel from "react-bootstrap/Carousel";
+import "./Header.css";
 
-const ofertaImage = 'https://placehold.co/1200x400/3c7849/ffffff?text=50%25+OFF+EN+TODO'; 
-const logoImage = '/logo.png'; // Ruta al logo de la empresa
+const slide1 = "/logo.png";
+const slide2 = "https://img.freepik.com/vector-gratis/promocion-ventas-abstractas_23-2148338919.jpg?semt=ais_hybrid&w=740&q=80";
+const slide3 = "https://compartirenfamilia.com/wp-content/uploads/2024/04/GettyImages-1371940128-scaled.jpg";
 
-const Header =()=> {
+const Header = () => {
   return (
-    
-    <Carousel fade>
-      
-      
+    <Carousel fade interval={4000} className="custom-carousel">
+      {/* SLIDE 1: LOGO */}
       <Carousel.Item>
-       
-        <img
-  className="d-block w-100 carousel-image"
-  src={logoImage}
-  alt="First slide: Oferta Flash"
-/>
-
+        <div className="carousel-overlay"></div>
+        <img className="d-block w-100 carousel-image logo-slide" src={slide1} alt="Logo MercadoUrbano" />
         <Carousel.Caption>
-          <h3>OFERTA FLASH</h3>
-          <p>¡50% de descuento en todos los artículos!</p>
-        </Carousel.Caption>
-      </Carousel.Item>
-      
-      
-      <Carousel.Item>
-        <img
-  className="d-block w-100 carousel-image"
-  src={ofertaImage}
-  alt="Second slide: Descuentos Exclusivos"
-/>
-
-        <Carousel.Caption>
-          <h3>Descuentos Exclusivos</h3>
-          <p>Válido solo por tiempo limitado.</p>
+          <h3 className="carousel-title">Bienvenido a MercadoUrbano</h3>
+          <p className="carousel-text">Tu mercado digital de confianza</p>
         </Carousel.Caption>
       </Carousel.Item>
 
-      
+      {/* SLIDE 2 */}
       <Carousel.Item>
-        <img
-  className="d-block w-100 carousel-image"
-  src={ofertaImage}
-  alt="Third slide: Tienda Online"
-/>
-
+        <div className="carousel-overlay"></div>
+        <img className="d-block w-100 carousel-image" src={slide2} alt="Ofertas especiales" />
         <Carousel.Caption>
-          <h3>Toda la Tienda</h3>
-          <p>
-            Aprovecha nuestros precios reducidos en cocina, herramientas y más.
-          </p>
+          <h3 className="carousel-title">Ofertas Especiales</h3>
+          <p className="carousel-text">Hasta 50% de descuento por tiempo limitado</p>
         </Carousel.Caption>
       </Carousel.Item>
 
+      {/* SLIDE 3 */}
+      <Carousel.Item>
+        <div className="carousel-overlay"></div>
+        <img className="d-block w-100 carousel-image" src={slide3} alt="Tecnología y más" />
+        <Carousel.Caption>
+          <h3 className="carousel-title">Tecnología, Hogar y Más</h3>
+          <p className="carousel-text">Encuentra todo lo que necesitas en un solo lugar</p>
+        </Carousel.Caption>
+      </Carousel.Item>
     </Carousel>
   );
-}
+};
 
 export default Header;
+
+

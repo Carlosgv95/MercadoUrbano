@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import { UserContext } from '../../context/UserContext';
 import api from '../../services/api';
+import Swal from "sweetalert2";
 
 const Perfil = () => {
   const { user, logout, setUser } = useContext(UserContext);
@@ -21,45 +22,117 @@ const Perfil = () => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  // 🔵 Cerrar sesión con Swal
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      icon: "question",
+      title: "Cerrar sesión",
+      text: "¿Deseas salir de tu cuenta?",
+      showCancelButton: true,
+      confirmButtonText: "Sí, salir",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        popup: "swal2-border-radius",
+        confirmButton: "btn-confirm",
+        cancelButton: "btn-cancel",
+      },
+      buttonsStyling: false,
+    });
 
-  const handleDeleteAccount = async () => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar tu cuenta?')) {
-      try {
-        await api.delete(`/usuarios/${user.id}`);
-        alert('✅ Cuenta eliminada correctamente');
-        logout();
-        navigate('/');
-      } catch (error) {
-        alert('❌ Error al eliminar la cuenta');
-        console.error(error);
-      }
+    if (result.isConfirmed) {
+      logout();
+      navigate('/');
     }
   };
 
-const handleSave = async () => {
-  try {
-    const response = await api.put(`/usuarios/${user.id}`, formData);
+  // 🔴 Eliminar cuenta con Swal
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "Eliminar cuenta",
+      text: "Esta acción es permanente. ¿Deseas continuar?",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      customClass: {
+        popup: "swal2-border-radius",
+        confirmButton: "btn-danger",
+        cancelButton: "btn-cancel",
+      },
+      buttonsStyling: false,
+    });
 
-    alert('✅ Perfil actualizado correctamente');
+    if (!result.isConfirmed) return;
 
-    // ACTUALIZA CONTEXTO
-    setUser(response.data.user);
+    try {
+      await api.delete(`/usuarios/${user.id}`);
 
-    // ACTUALIZA LOCALSTORAGE
-    localStorage.setItem('user', JSON.stringify(response.data.user));
+      await Swal.fire({
+        icon: "success",
+        title: "Cuenta eliminada",
+        text: "Tu cuenta ha sido eliminada correctamente",
+        confirmButtonText: "Aceptar",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
 
-    setIsEditing(false);
+      logout();
+      navigate('/');
 
-  } catch (error) {
-    alert('❌ Error al actualizar el perfil');
-    console.error(error);
-  }
-};
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo eliminar la cuenta",
+        confirmButtonText: "Cerrar",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
+    }
+  };
 
+  // 🟢 Guardar cambios con Swal
+  const handleSave = async () => {
+    try {
+      const response = await api.put(`/usuarios/${user.id}`, formData);
+
+      setUser(response.data.user);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+
+      await Swal.fire({
+        icon: "success",
+        title: "Perfil actualizado",
+        text: "Tus datos se han guardado correctamente",
+        confirmButtonText: "Aceptar",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
+
+      setIsEditing(false);
+
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo actualizar el perfil",
+        confirmButtonText: "Cerrar",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
+    }
+  };
 
   return (
     <Container fluid className="p-0">
@@ -83,22 +156,20 @@ const handleSave = async () => {
               {/* FOTO DE PERFIL */}
               <div className="text-center mb-4">
                 <img
-  src={
-    user?.foto_perfil && user.foto_perfil.trim() !== ""
-      ? user.foto_perfil
-      : "https://picsum.photos/150"
-  }
-  onError={(e) => {
-    e.target.src = "https://picsum.photos/150";
-  }}
-  alt="Foto de perfil"
-  className="rounded-circle"
-  width="150"
-  height="150"
-  style={{ objectFit: "cover" }}
-/>
-
-
+                  src={
+                    user?.foto_perfil && user.foto_perfil.trim() !== ""
+                      ? user.foto_perfil
+                      : "https://picsum.photos/150"
+                  }
+                  onError={(e) => {
+                    e.target.src = "https://picsum.photos/150";
+                  }}
+                  alt="Foto de perfil"
+                  className="rounded-circle"
+                  width="150"
+                  height="150"
+                  style={{ objectFit: "cover" }}
+                />
               </div>
 
               {!isEditing ? (
@@ -127,7 +198,6 @@ const handleSave = async () => {
                     <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} className="form-control mb-2" />
                     <input type="email" name="correo" value={formData.correo} onChange={handleChange} className="form-control mb-2" />
 
-                    {/* INPUT FOTO PERFIL */}
                     <input
                       type="text"
                       name="foto_perfil"
@@ -140,7 +210,32 @@ const handleSave = async () => {
 
                   <div className="d-flex flex-column align-items-center gap-3 mt-4">
                     <Button variant="primary" onClick={handleSave}>Guardar Cambios</Button>
-                    <Button variant="secondary" onClick={() => setIsEditing(false)}>Cancelar</Button>
+
+                    <Button
+                      variant="secondary"
+                      onClick={async () => {
+                        const result = await Swal.fire({
+                          icon: "question",
+                          title: "Cancelar edición",
+                          text: "¿Deseas descartar los cambios?",
+                          showCancelButton: true,
+                          confirmButtonText: "Sí, descartar",
+                          cancelButtonText: "Seguir editando",
+                          customClass: {
+                            popup: "swal2-border-radius",
+                            confirmButton: "btn-confirm",
+                            cancelButton: "btn-cancel",
+                          },
+                          buttonsStyling: false,
+                        });
+
+                        if (result.isConfirmed) {
+                          setIsEditing(false);
+                        }
+                      }}
+                    >
+                      Cancelar
+                    </Button>
                   </div>
                 </>
               )}
@@ -153,6 +248,7 @@ const handleSave = async () => {
 };
 
 export default Perfil;
+
 
 
 
