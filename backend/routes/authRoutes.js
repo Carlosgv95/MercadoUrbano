@@ -29,7 +29,8 @@ router.post('/login', async (req, res) => {
         apellido: user.apellido,
         telefono: user.telefono,
         direccion: user.direccion,
-        correo: user.correo
+        correo: user.correo,
+        foto_perfil: user.foto_perfil
       },
       token
     });

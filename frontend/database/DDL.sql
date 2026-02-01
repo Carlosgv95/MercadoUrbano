@@ -27,6 +27,9 @@ CREATE TABLE usuarios (
 );
 
 
+ALTER TABLE usuarios 
+ADD COLUMN foto_perfil TEXT;
+
 
 -- Tabla de productos
 CREATE TABLE productos (

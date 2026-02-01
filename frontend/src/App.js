@@ -19,24 +19,30 @@ import NotFound from './Pages/NotFound/NotFound';
 import Swal from "sweetalert2";
 import './App.css';
 
-const AppRoutes = () => {
-  const { user } = useContext(UserContext);
+let hasShownSwal = false; // ⬅️ evita múltiples popups
 
-  // 🔒 Función para proteger rutas con Swal.fire
+const AppRoutes = () => {
+  const { user, userLoaded } = useContext(UserContext);
+
   const protect = (component) => {
+    if (!userLoaded) return null; // ⏳ Espera a que cargue el usuario
+
     if (user) return component;
 
-    Swal.fire({
-      icon: "warning",
-      title: "Acceso restringido",
-      text: "Debes iniciar sesión para acceder a esta sección",
-      confirmButtonText: "Ir a iniciar sesión",
-      customClass: {
-        popup: "swal2-border-radius",
-        confirmButton: "btn-confirm",
-      },
-      buttonsStyling: false,
-    });
+    if (!hasShownSwal) {
+      hasShownSwal = true;
+      Swal.fire({
+        icon: "warning",
+        title: "Acceso restringido",
+        text: "Debes iniciar sesión para acceder a esta sección",
+        confirmButtonText: "Ir a iniciar sesión",
+        customClass: {
+          popup: "swal2-border-radius",
+          confirmButton: "btn-confirm",
+        },
+        buttonsStyling: false,
+      });
+    }
 
     return <Navigate to="/ingreso" replace />;
   };
@@ -49,12 +55,11 @@ const AppRoutes = () => {
       <Route path="/carrito" element={<Cart />} />
       <Route path="/productos" element={<Productos />} />
 
-      {/* 🔒 Rutas protegidas con Swal */}
+      {/* 🔒 Rutas protegidas */}
       <Route path="/perfil" element={protect(<Perfil />)} />
       <Route path="/mis-productos" element={protect(<MisProductos />)} />
       <Route path="/favoritos" element={protect(<Favoritos />)} />
 
-      {/* Página no encontrada */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
