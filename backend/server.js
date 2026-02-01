@@ -15,7 +15,7 @@ const favoritosRoutes = require('./routes/favoritosRoutes');
 const orderRoutes = require('./routes/orderRoutes'); // ✅ Nueva ruta para órdenes
 
 const app = express();
-const port = process.env.PORT || 3000; // ✅ Backend en puerto 3000
+const port = process.env.PORT || 10000; // ✅ Backend en puerto 3000
 
 // --- Middlewares Globales ---
 app.use(cors({
