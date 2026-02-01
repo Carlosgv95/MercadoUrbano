@@ -19,10 +19,15 @@ const port = process.env.PORT || 10000; // ✅ Backend en puerto 3000
 
 // --- Middlewares Globales ---
 app.use(cors({
-  origin: 'http://localhost:3001', // ✅ Puerto del frontend
+  origin: [
+    'http://localhost:3001',
+    'https://mercadourbano.vercel.app',
+    'https://TU-FRONTEND.vercel.app'
+  ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
+
 app.use(express.json()); // ✅ Parseo de JSON
 app.use(requestLogger); // ✅ Logger de peticiones
 
