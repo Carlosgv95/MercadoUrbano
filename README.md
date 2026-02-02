@@ -44,4 +44,4 @@ El proyecto está desplegado en Vercel:
 👉 mercado-urbano.vercel.app
 
 # Ejecutar en modo desarrollo
-npm run dev
+npm start
