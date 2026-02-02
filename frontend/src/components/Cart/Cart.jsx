@@ -18,7 +18,6 @@ const Cart = () => {
 
   const { user } = useContext(UserContext);
 
-  // Formatear precios con validación
   const formatPrice = (value) => {
     const number = Number(value);
     if (isNaN(number) || number <= 0) return "$0";
@@ -28,14 +27,9 @@ const Cart = () => {
     }).format(number);
   };
 
-  // 🟡 Confirmación profesional estilo Mercado Libre
   const handleClearCart = () => {
     if (cartItems.length === 0) {
-      Swal.fire({
-        icon: "info",
-        title: "Tu carrito está vacío",
-        confirmButtonText: "Ok",
-      });
+      Swal.fire({ icon: "info", title: "Tu carrito está vacío", confirmButtonText: "Ok" });
       return;
     }
 
@@ -47,46 +41,19 @@ const Cart = () => {
       confirmButtonText: "Sí, vaciar carrito",
       cancelButtonText: "Cancelar",
       reverseButtons: true,
-      customClass: {
-        popup: "swal2-border-radius",
-        confirmButton: "btn-confirm",
-        cancelButton: "btn-cancel",
-      },
-      buttonsStyling: false,
     }).then((result) => {
       if (result.isConfirmed) {
         clearCart();
-        Swal.fire({
-          icon: "success",
-          title: "Carrito vaciado",
-          text: "Tu carrito ha sido vaciado correctamente",
-          confirmButtonText: "Ok",
-          customClass: {
-            confirmButton: "btn-confirm",
-          },
-          buttonsStyling: false,
-        });
+        Swal.fire({ icon: "success", title: "Carrito vaciado", text: "Tu carrito ha sido vaciado correctamente" });
       }
     });
   };
 
-  // 🟢 Swal.fire profesional al eliminar producto
   const handleRemove = (id) => {
     removeFromCart(id);
-
-    Swal.fire({
-      icon: "success",
-      title: "Producto eliminado",
-      text: "El producto fue eliminado del carrito",
-      timer: 1800,
-      showConfirmButton: false,
-      customClass: {
-        popup: "swal2-border-radius",
-      }
-    });
+    Swal.fire({ icon: "success", title: "Producto eliminado", text: "El producto fue eliminado del carrito", timer: 1800, showConfirmButton: false });
   };
 
-  // 🛒 Comprar productos
   const handleBuy = async () => {
     if (!user) {
       Swal.fire({
@@ -94,23 +61,17 @@ const Cart = () => {
         title: "Debes iniciar sesión",
         text: "Por favor, inicia sesión para completar la compra.",
         confirmButtonText: "Ir a Ingresar",
-      }).then(() => {
-        window.location.href = "/ingreso";
-      });
+      }).then(() => { window.location.href = "/ingreso"; });
       return;
     }
 
     if (cartItems.length === 0) {
-      Swal.fire({
-        icon: "error",
-        text: "Tu carrito está vacío",
-        confirmButtonText: "Ok",
-      });
+      Swal.fire({ icon: "error", text: "Tu carrito está vacío", confirmButtonText: "Ok" });
       return;
     }
 
     try {
-      const response = await api.post("/ordenes", {
+      const response = await api.post("/carrito/comprar", {
         usuario_id: user.id,
         productos: cartItems,
         total: total,
@@ -122,6 +83,13 @@ const Cart = () => {
         html: `
           <p><b>ID de orden:</b> ${response.data.orden_id}</p>
           <p><b>Total:</b> ${formatPrice(total)}</p>
+          <hr/>
+          <p><b>Detalle:</b></p>
+          <ul>
+            ${response.data.detalles.map(det => `
+              <li>${det.nombre} x${det.cantidad} - ${formatPrice(det.precio)}</li>
+            `).join('')}
+          </ul>
         `,
         confirmButtonText: "Ok",
       });
@@ -129,18 +97,13 @@ const Cart = () => {
       clearCart();
     } catch (error) {
       console.error("Error al crear orden:", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudo completar la compra. Intenta nuevamente.",
-      });
+      Swal.fire({ icon: "error", title: "Error", text: "No se pudo completar la compra. Intenta nuevamente." });
     }
   };
 
   return (
     <div className="p-4">
       <h3>Tu Carrito</h3>
-
       {cartItems.length === 0 ? (
         <p>El carrito está vacío. ¡Agrega productos para comenzar!</p>
       ) : (
@@ -155,64 +118,33 @@ const Cart = () => {
                 <th>Acción</th>
               </tr>
             </thead>
-
             <tbody>
               {cartItems.map((item) => {
                 const price = Number(item.price);
                 const quantity = Number(item.quantity);
                 const subtotal = price * quantity;
-
                 return (
                   <tr key={item.id}>
                     <td>{item.name || "Sin nombre"}</td>
                     <td>{formatPrice(price)}</td>
-
                     <td>
-                      <Button
-                        variant="light"
-                        size="sm"
-                        onClick={() => decreaseQty(item.id)}
-                      >
-                        -
-                      </Button>
-
+                      <Button variant="light" size="sm" onClick={() => decreaseQty(item.id)}>-</Button>
                       <span className="mx-2">{quantity}</span>
-
-                      <Button
-                        variant="light"
-                        size="sm"
-                        onClick={() => increaseQty(item.id)}
-                      >
-                        +
-                      </Button>
+                      <Button variant="light" size="sm" onClick={() => increaseQty(item.id)}>+</Button>
                     </td>
-
                     <td>{formatPrice(subtotal)}</td>
-
                     <td>
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleRemove(item.id)}
-                      >
-                        Eliminar
-                      </Button>
+                      <Button variant="danger" size="sm" onClick={() => handleRemove(item.id)}>Eliminar</Button>
                     </td>
                   </tr>
                 );
               })}
             </tbody>
           </Table>
-
           <h5>Total: {formatPrice(total)}</h5>
-
           <div className="mt-3">
-            <Button variant="secondary" onClick={handleClearCart}>
-              Vaciar carrito
-            </Button>{" "}
-            <Button variant="success" onClick={handleBuy}>
-              Comprar
-            </Button>
+            <Button variant="secondary" onClick={handleClearCart}>Vaciar carrito</Button>{" "}
+            <Button variant="success" onClick={handleBuy}>Comprar</Button>
           </div>
         </>
       )}
