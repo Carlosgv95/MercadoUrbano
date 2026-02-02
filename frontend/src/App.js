@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 
 import { UserProvider, UserContext } from './context/UserContext';
@@ -26,13 +26,15 @@ let hasShownSwal = false;
 
 const AppRoutes = () => {
   const { user, userLoaded } = useContext(UserContext);
+  const location = useLocation();
 
   const protect = (component) => {
     if (!userLoaded) return null;
 
     if (user) return component;
 
-    if (!hasShownSwal) {
+    // Solo mostrar el Swal si NO estamos en la página principal
+    if (!hasShownSwal && location.pathname !== "/") {
       hasShownSwal = true;
       Swal.fire({
         icon: "warning",
@@ -62,7 +64,6 @@ const AppRoutes = () => {
       <Route path="/terminos" element={<Terminos />} />
       <Route path="/privacidad" element={<Privacidad />} />
       <Route path="/faq" element={<FAQ />} />
-  
 
       {/* Rutas protegidas */}
       <Route path="/perfil" element={protect(<Perfil />)} />
@@ -93,5 +94,6 @@ const App = () => {
 };
 
 export default App;
+
 
 
