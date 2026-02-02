@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+// Middlewares
 const { requestLogger } = require('./middlewares/logger');
 
 // Rutas
@@ -15,7 +16,9 @@ const orderRoutes = require('./routes/orderRoutes');
 const app = express();
 const port = process.env.PORT || 10000;
 
-// 🔥🔥🔥 CORS DEBE IR AQUÍ — ANTES DE TODO 🔥🔥🔥
+// ------------------------------------------------------
+// 🔥 CORS — DEBE IR ARRIBA DE TODO
+// ------------------------------------------------------
 const corsOptions = {
   origin: [
     'http://localhost:3001',
@@ -27,18 +30,21 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
-// 🔥🔥🔥 FIN DE CORS 🔥🔥🔥
+
+// Manejo seguro de preflight (compatible con Node 22)
+app.options('/*', cors(corsOptions));
+// ------------------------------------------------------
 
 // Middlewares globales
 app.use(express.json());
 app.use(requestLogger);
 
-// Rutas
+// Ruta raíz
 app.get("/", (req, res) => {
   res.send("¡Bienvenido al Backend de MercadoUrbano!");
 });
 
+// Rutas API
 app.use('/productos', productRoutes);
 app.use('/usuarios', userRoutes);
 app.use('/auth', authRoutes);
@@ -52,10 +58,12 @@ app.use((req, res) => {
 });
 
 // Iniciar servidor
-app.listen(port, () => {
-  console.log(`Servidor MercadoUrbano escuchando en http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Servidor MercadoUrbano escuchando en http://localhost:${port}`);
+  });
+}
 
-
+module.exports = app;
 
 
