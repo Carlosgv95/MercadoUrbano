@@ -22,7 +22,8 @@ const port = process.env.PORT || 10000;
 const corsOptions = {
   origin: [
     'http://localhost:3001',
-    'https://mercado-urbano-u3ip.vercel.app'
+    'https://mercado-urbano-u3ip.vercel.app',
+    'https://mercado-urbano.vercel.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
