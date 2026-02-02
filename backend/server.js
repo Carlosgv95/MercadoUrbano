@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-// Middlewares
 const { requestLogger } = require('./middlewares/logger');
 
 // Rutas
@@ -14,25 +13,28 @@ const favoritosRoutes = require('./routes/favoritosRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
-
-// Render asigna dinámicamente el puerto
 const port = process.env.PORT || 10000;
 
-// --- CORS CORRECTO PARA PRODUCCIÓN ---
-app.use(cors({
+// 🔥🔥🔥 CORS DEBE IR AQUÍ — ANTES DE TODO 🔥🔥🔥
+const corsOptions = {
   origin: [
-    'http://localhost:3001', // Desarrollo local
-    'https://mercado-urbano-u3ip.vercel.app' // Frontend en Vercel
+    'http://localhost:3001',
+    'https://mercado-urbano-u3ip.vercel.app'
   ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
-}));
+};
 
-// --- Middlewares globales ---
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+// 🔥🔥🔥 FIN DE CORS 🔥🔥🔥
+
+// Middlewares globales
 app.use(express.json());
 app.use(requestLogger);
 
-// --- Rutas ---
+// Rutas
 app.get("/", (req, res) => {
   res.send("¡Bienvenido al Backend de MercadoUrbano!");
 });
@@ -44,19 +46,15 @@ app.use('/carrito', cartRoutes);
 app.use('/favoritos', favoritosRoutes);
 app.use('/ordenes', orderRoutes);
 
-// --- Manejo de rutas no encontradas ---
+// 404
 app.use((req, res) => {
   res.status(404).json({ message: 'Ruta no encontrada en MercadoUrbano.' });
 });
 
-// --- Iniciar servidor ---
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Servidor MercadoUrbano escuchando en http://localhost:${port}`);
-  });
-}
-
-module.exports = app;
+// Iniciar servidor
+app.listen(port, () => {
+  console.log(`Servidor MercadoUrbano escuchando en http://localhost:${port}`);
+});
 
 
 
