@@ -30,9 +30,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Manejo seguro de preflight (compatible con Node 22)
-app.options('/*', cors(corsOptions));
 // ------------------------------------------------------
 
 // Middlewares globales
@@ -65,5 +62,6 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = app;
+
 
 
