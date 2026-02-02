@@ -7,6 +7,7 @@ const { verifyToken } = require('../middlewares/authMiddleware');
 router.get('/', verifyToken, async (req, res) => {
   try {
     const usuarioId = req.user.id;
+
     const result = await pool.query(
       `SELECT c.id, c.producto_id, c.cantidad, p.nombre, p.precio, p.imagen
        FROM carrito c
@@ -14,6 +15,7 @@ router.get('/', verifyToken, async (req, res) => {
        WHERE c.usuario_id = $1`,
       [usuarioId]
     );
+
     res.json({ carrito: result.rows });
   } catch (err) {
     console.error('Error al obtener carrito:', err);
@@ -23,9 +25,10 @@ router.get('/', verifyToken, async (req, res) => {
 
 // Comprar productos del carrito → crear orden
 router.post('/comprar', verifyToken, async (req, res) => {
-  const { usuario_id, productos, total } = req.body;
+  const { productos, total } = req.body;
+  const usuario_id = req.user.id;
 
-  if (!usuario_id || !productos || productos.length === 0 || !total) {
+  if (!productos || productos.length === 0 || !total) {
     return res.status(400).json({ message: 'Datos incompletos para crear la orden' });
   }
 
@@ -64,5 +67,4 @@ router.post('/comprar', verifyToken, async (req, res) => {
 });
 
 module.exports = router;
-
 
