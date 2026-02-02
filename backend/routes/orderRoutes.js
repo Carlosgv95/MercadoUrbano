@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
@@ -37,38 +36,41 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Obtener todas las órdenes de un usuario
-router.get('/:usuario_id', async (req, res) => {
-  const { usuario_id } = req.params;
+// Obtener todas las órdenes de un usuario con detalles
+router.get('/', async (req, res) => {
+  const { usuario_id } = req.query;
+  if (!usuario_id) {
+    return res.status(400).json({ message: 'Falta usuario_id en la consulta' });
+  }
+
   try {
-    const ordenes = await pool.query(
+    const ordenesResult = await pool.query(
       'SELECT * FROM ordenes WHERE usuario_id = $1 ORDER BY fecha DESC',
       [usuario_id]
     );
-    res.json(ordenes.rows);
+
+    const ordenes = [];
+
+    for (const orden of ordenesResult.rows) {
+      const detallesResult = await pool.query(
+        `SELECT od.*, p.nombre, p.imagen 
+         FROM orden_detalles od
+         INNER JOIN productos p ON od.producto_id = p.id
+         WHERE od.orden_id = $1`,
+        [orden.id]
+      );
+
+      ordenes.push({
+        ...orden,
+        detalles: detallesResult.rows
+      });
+    }
+
+    res.json(ordenes);
   } catch (err) {
     console.error('Error al obtener órdenes:', err);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 });
 
-// Obtener detalles de una orden específica
-router.get('/detalles/:orden_id', async (req, res) => {
-  const { orden_id } = req.params;
-  try {
-    const detalles = await pool.query(
-      `SELECT od.*, p.nombre, p.imagen 
-       FROM orden_detalles od
-       INNER JOIN productos p ON od.producto_id = p.id
-       WHERE od.orden_id = $1`,
-      [orden_id]
-    );
-    res.json(detalles.rows);
-  } catch (err) {
-    console.error('Error al obtener detalles de la orden:', err);
-    res.status(500).json({ message: 'Error en el servidor' });
-  }
-});
-
 module.exports = router;
-
