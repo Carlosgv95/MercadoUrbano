@@ -12,7 +12,7 @@ html, body {
 
 .main-content {
   flex: 1; /* Ocupa todo el espacio disponible entre Navbar y Footer */
-  padding: 20px; /* Opcional: espacio interno */
+  padding: 20px; /* Espacio interno */
 }
 
 .swal2-border-radius {
@@ -28,4 +28,49 @@ html, body {
   border-radius: 6px;
 }
 
-.carousel-image { height: 400px; object-fit: cover; width: 100%; }
+.carousel-image {
+  height: 400px;
+  object-fit: cover;
+  width: 100%;
+}
+
+/* 🔹 Responsividad con media queries */
+
+/* Teléfonos pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 10px; /* menos espacio interno */
+  }
+
+  .carousel-image {
+    height: 200px; /* imágenes más pequeñas */
+  }
+
+  .btn-confirm {
+    padding: 6px 12px; /* botones más compactos */
+    font-size: 14px;
+  }
+}
+
+/* Tablets (481px a 768px) */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .carousel-image {
+    height: 250px;
+  }
+
+  .btn-confirm {
+    font-size: 15px;
+  }
+}
+
+/* Pantallas medianas (769px a 1024px) */
+@media (max-width: 1024px) {
+  .carousel-image {
+    height: 300px;
+  }
+}
+
