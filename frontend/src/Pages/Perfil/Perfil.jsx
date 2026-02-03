@@ -208,9 +208,21 @@ const Perfil = () => {
                       <Accordion.Body>
                         <ListGroup>
                           {orden.detalles.map(det => (
-                            <ListGroup.Item key={det.id}>
-                              Producto #{det.producto_id} | Cantidad: {det.cantidad} | Precio: ${det.precio}
-                            </ListGroup.Item>
+                           <ListGroup.Item key={det.id} className="d-flex align-items-center gap-3">
+  <img
+    src={det.imagen}
+    alt={det.nombre}
+    width="50"
+    height="50"
+    style={{ objectFit: 'cover', borderRadius: '5px' }}
+    onError={(e) => { e.target.src = "https://picsum.photos/50"; }}
+  />
+  <div>
+    <strong>{det.nombre}</strong><br />
+    Cantidad: {det.cantidad} | Precio: ${det.precio}
+  </div>
+</ListGroup.Item>
+
                           ))}
                         </ListGroup>
                       </Accordion.Body>
