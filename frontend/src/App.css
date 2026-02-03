@@ -2,17 +2,19 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif; /* tipografía más legible */
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Ocupa toda la altura de la ventana */
+  min-height: 100vh; /* ocupa toda la altura */
 }
 
 .main-content {
-  flex: 1; /* Ocupa todo el espacio disponible entre Navbar y Footer */
-  padding: 20px; /* Espacio interno */
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box; /* asegura que padding no rompa el layout */
 }
 
 .swal2-border-radius {
@@ -23,32 +25,40 @@ html, body {
   background-color: #3483fa !important;
   color: white !important;
   border: none !important;
-  padding: 8px 16px !important;
+  padding: 10px 18px !important;
   font-weight: 500;
   border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background-color: #2968c8 !important; /* efecto hover */
 }
 
 .carousel-image {
   height: 400px;
   object-fit: cover;
   width: 100%;
+  border-radius: 8px; /* bordes suaves */
 }
 
-/* 🔹 Responsividad con media queries */
+/* 🔹 Responsividad */
 
 /* Teléfonos pequeños (hasta 480px) */
 @media (max-width: 480px) {
   .main-content {
-    padding: 10px; /* menos espacio interno */
+    padding: 10px;
   }
 
   .carousel-image {
-    height: 200px; /* imágenes más pequeñas */
+    height: 180px; /* más compacto */
   }
 
   .btn-confirm {
-    padding: 6px 12px; /* botones más compactos */
+    padding: 6px 12px;
     font-size: 14px;
+    width: 100%; /* botones ocupan todo el ancho */
   }
 }
 
@@ -64,6 +74,7 @@ html, body {
 
   .btn-confirm {
     font-size: 15px;
+    padding: 8px 14px;
   }
 }
 
@@ -73,4 +84,5 @@ html, body {
     height: 300px;
   }
 }
+
 
