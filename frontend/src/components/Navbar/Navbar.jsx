@@ -35,15 +35,10 @@ const Navbar = () => {
 
         <NavbarBS.Toggle aria-controls="navbarScroll" />
         <NavbarBS.Collapse id="navbarScroll">
-          {/* 🟢 Links de navegación centrados */}
-          <Nav className="mx-auto my-2 my-lg-0 justify-content-center" navbarScroll>
-            <Nav.Link as={NavLink} to="/productos" className="px-3 text-center">
-              Productos
-            </Nav.Link>
-          </Nav>
+          {/* 🔴 Sección completa alineada a la derecha */}
+          <Nav className="ms-auto d-flex align-items-center gap-3" navbarScroll>
+            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
 
-          {/* 🔴 Sección de usuario y carrito */}
-          <Nav className="ms-auto d-flex align-items-center">
             {!user ? (
               <>
                 <Nav.Link as={NavLink} to="/ingreso">Ingresar 🔐</Nav.Link>
