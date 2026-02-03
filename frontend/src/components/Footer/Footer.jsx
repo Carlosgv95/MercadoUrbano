@@ -11,22 +11,22 @@ const Footer = () => {
       </div>
 
       <div className="footer-links">
-        <div>
+        <div className="footer-section" aria-label="Ayuda">
           <h4>Ayuda</h4>
           <ul>
             <li><Link to="/faq">Preguntas frecuentes</Link></li>
           </ul>
         </div>
 
-        <div>
+        <div className="footer-section" aria-label="Cuenta">
           <h4>Cuenta</h4>
           <ul>
-            <li><Link to="/ingreso">Ingresar</Link></li>
-            <li><Link to="/registro">Regístrate</Link></li>
+            <li><Link to="/ingreso">Ingresar 🔐</Link></li>
+            <li><Link to="/registro">Regístrate 📝</Link></li>
           </ul>
         </div>
 
-        <div>
+        <div className="footer-section" aria-label="Legal">
           <h4>Legal</h4>
           <ul>
             <li><Link to="/terminos">Términos y condiciones</Link></li>
@@ -43,3 +43,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
