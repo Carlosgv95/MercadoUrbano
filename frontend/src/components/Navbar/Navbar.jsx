@@ -10,7 +10,6 @@ import NavbarBS from "react-bootstrap/Navbar";
 const Navbar = () => {
   const { cartItems } = useContext(CartContext);
   const { user, logout } = useContext(UserContext);
-
   const navigate = useNavigate();
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -36,9 +35,11 @@ const Navbar = () => {
 
         <NavbarBS.Toggle aria-controls="navbarScroll" />
         <NavbarBS.Collapse id="navbarScroll">
-          {/* 🟢 Links de navegación */}
-          <Nav className="me-auto my-2 my-lg-0" navbarScroll>
-            <Nav.Link as={NavLink} to="/productos">Productos</Nav.Link>
+          {/* 🟢 Links de navegación centrados */}
+          <Nav className="mx-auto my-2 my-lg-0 justify-content-center" navbarScroll>
+            <Nav.Link as={NavLink} to="/productos" className="px-3 text-center">
+              Productos
+            </Nav.Link>
           </Nav>
 
           {/* 🔴 Sección de usuario y carrito */}
@@ -80,4 +81,5 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
 
