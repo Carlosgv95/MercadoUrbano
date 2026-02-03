@@ -21,19 +21,25 @@ const ProductSlider = ({ title }) => {
   const [favorites, setFavorites] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const { addToCart } = useContext(CartContext);
 
-  // ✅ Obtener productos desde la API
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await api.get('/productos'); // GET desde el backend
+        const response = await api.get('/productos');
         setProductos(response.data);
       } catch (error) {
         console.error('Error al obtener productos:', error);
       }
     };
     fetchProductos();
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const handleOpenModal = (p) => {
@@ -47,7 +53,9 @@ const ProductSlider = ({ title }) => {
     );
   };
 
-  const productSlides = chunkArray(productos, 4); // ✅ Ahora usamos productos del backend
+  const productSlides = isMobile
+    ? productos.map(p => [p]) // una card por slide en móvil
+    : chunkArray(productos, 4); // 4 cards por slide en desktop
 
   return (
     <Container className="my-5">
@@ -56,12 +64,12 @@ const ProductSlider = ({ title }) => {
         <Button variant="outline-dark" size="sm" as={Link} to="/productos">Ver todos</Button>
       </div>
 
-      <Carousel indicators={false} interval={null} variant="dark" className="px-5">
+      <Carousel indicators={false} interval={null} variant="dark" className="px-5" touch={true}>
         {productSlides.map((slide, idx) => (
           <Carousel.Item key={idx}>
-            <Row>
+            <Row className="justify-content-center">
               {slide.map((product) => (
-                <Col key={product.id} xs={6} md={3} className="px-2">
+                <Col key={product.id} xs={12} md={3} className="px-2">
                   <ProductCard
                     product={product}
                     onOpenModal={handleOpenModal}
@@ -76,7 +84,6 @@ const ProductSlider = ({ title }) => {
         ))}
       </Carousel>
 
-      {/* Modal para ver detalles */}
       <ProductModal
         show={showModal}
         onHide={() => setShowModal(false)}
@@ -92,3 +99,4 @@ const ProductSlider = ({ title }) => {
 };
 
 export default ProductSlider;
+
