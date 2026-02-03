@@ -74,8 +74,8 @@ const ProductSlider = ({ title }) => {
                     product={product}
                     onOpenModal={handleOpenModal}
                     addToCart={addToCart}
-                    toggleFavorite={toggleFavorite}
                     isFavorite={favorites.some(f => f.id === product.id)}
+                    onFavoriteChange={() => toggleFavorite(product)}
                   />
                 </Col>
               ))}
