@@ -71,11 +71,11 @@ const Cart = () => {
     }
 
     try {
-      const response = await api.post("/carrito/comprar", {
-        usuario_id: user.id,
-        productos: cartItems,
-        total: total,
-      });
+     const response = await api.post("/carrito/comprar", {
+  productos: cartItems,
+  total: total,
+});
+
 
       Swal.fire({
         icon: "success",

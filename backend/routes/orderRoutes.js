@@ -1,24 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
+const { verifyToken } = require('../middlewares/authMiddleware');
 
-// Crear orden
-router.post('/', async (req, res) => {
-  const { usuario_id, productos, total } = req.body;
+// Crear orden (protegida)
+router.post('/', verifyToken, async (req, res) => {
+  const { productos, total } = req.body;
+  const usuario_id = req.user.id;
 
-  if (!usuario_id || !productos || productos.length === 0 || !total) {
+  if (!productos || productos.length === 0 || !total) {
     return res.status(400).json({ message: 'Datos incompletos para crear la orden' });
   }
 
   try {
-    // Insertar orden en la tabla ordenes
     const ordenResult = await pool.query(
       'INSERT INTO ordenes (usuario_id, total) VALUES ($1, $2) RETURNING id',
       [usuario_id, total]
     );
     const ordenId = ordenResult.rows[0].id;
 
-    // Insertar detalles en la tabla orden_detalles
     for (const p of productos) {
       await pool.query(
         'INSERT INTO orden_detalles (orden_id, producto_id, cantidad, precio) VALUES ($1, $2, $3, $4)',
@@ -36,12 +36,9 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Obtener todas las órdenes de un usuario con detalles
-router.get('/', async (req, res) => {
-  const { usuario_id } = req.query;
-  if (!usuario_id) {
-    return res.status(400).json({ message: 'Falta usuario_id en la consulta' });
-  }
+// Obtener órdenes (protegida)
+router.get('/', verifyToken, async (req, res) => {
+  const usuario_id = req.user.id;
 
   try {
     const ordenesResult = await pool.query(

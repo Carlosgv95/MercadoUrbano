@@ -208,7 +208,7 @@ const Perfil = () => {
                       <Accordion.Body>
                         <ListGroup>
                           {orden.detalles.map(det => (
-                           <ListGroup.Item key={det.id} className="d-flex align-items-center gap-3">
+  <ListGroup.Item key={det.id} className="d-flex align-items-center gap-3">
   <img
     src={det.imagen}
     alt={det.nombre}
