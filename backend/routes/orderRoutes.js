@@ -8,17 +8,19 @@ router.post('/', verifyToken, async (req, res) => {
   const { productos, total } = req.body;
   const usuario_id = req.user.id;
 
-  if (!productos || productos.length === 0 || !total) {
+  if (!productos || productos.length === 0 || total == null) {
     return res.status(400).json({ message: 'Datos incompletos para crear la orden' });
   }
 
   try {
+    // Insertar orden en la tabla ordenes
     const ordenResult = await pool.query(
       'INSERT INTO ordenes (usuario_id, total) VALUES ($1, $2) RETURNING id',
       [usuario_id, total]
     );
     const ordenId = ordenResult.rows[0].id;
 
+    // Insertar detalles en la tabla orden_detalles
     for (const p of productos) {
       await pool.query(
         'INSERT INTO orden_detalles (orden_id, producto_id, cantidad, precio) VALUES ($1, $2, $3, $4)',
@@ -26,9 +28,20 @@ router.post('/', verifyToken, async (req, res) => {
       );
     }
 
+    // Obtener detalles completos con nombre e imagen
+    const detallesResult = await pool.query(
+      `SELECT od.*, p.nombre, p.imagen 
+       FROM orden_detalles od
+       INNER JOIN productos p ON od.producto_id = p.id
+       WHERE od.orden_id = $1`,
+      [ordenId]
+    );
+
     res.status(201).json({
       message: 'Orden creada con éxito',
-      orden_id: ordenId
+      orden_id: ordenId,
+      total,
+      detalles: detallesResult.rows
     });
   } catch (err) {
     console.error('Error al crear orden:', err);

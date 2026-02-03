@@ -29,7 +29,8 @@ const Perfil = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get(`/ordenes?usuario_id=${user.id}`);
+        // ✅ Ya no se pasa usuario_id, el backend lo obtiene del token
+        const response = await api.get("/ordenes");
         setOrders(response.data);
       } catch (error) {
         Swal.fire({
@@ -42,8 +43,9 @@ const Perfil = () => {
         setLoadingOrders(false);
       }
     };
-    if (user?.id) fetchOrders();
-  }, [user]);
+
+    fetchOrders();
+  }, []);
 
   // 🔵 Cerrar sesión
   const handleLogout = async () => {
@@ -208,22 +210,22 @@ const Perfil = () => {
                       <Accordion.Body>
                         <ListGroup>
                           {orden.detalles.map(det => (
-  <ListGroup.Item key={det.id} className="d-flex align-items-center gap-3">
-  <img
-    src={det.imagen}
-    alt={det.nombre}
-    width="50"
-    height="50"
-    style={{ objectFit: 'cover', borderRadius: '5px' }}
-    onError={(e) => { e.target.src = "https://picsum.photos/50"; }}
-  />
-  <div>
-    <strong>{det.nombre}</strong><br />
-    Cantidad: {det.cantidad} | Precio: ${det.precio}
-  </div>
-</ListGroup.Item>
-
+                            <ListGroup.Item key={det.id} className="d-flex align-items-center gap-3">
+                              <img
+                                src={det.imagen}
+                                alt={det.nombre}
+                                width="50"
+                                height="50"
+                                style={{ objectFit: 'cover', borderRadius: '5px' }}
+                                onError={(e) => { e.target.src = "https://picsum.photos/50"; }}
+                              />
+                              <div>
+                                <strong>{det.nombre}</strong><br />
+                                Cantidad: {det.cantidad} | Precio: ${det.precio}
+                              </div>
+                            </ListGroup.Item>
                           ))}
+
                         </ListGroup>
                       </Accordion.Body>
                     </Accordion.Item>
