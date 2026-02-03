@@ -7,20 +7,31 @@ export const UserProvider = ({ children }) => {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(null);
-  const [userLoaded, setUserLoaded] = useState(false); // ⬅️ NUEVO
+  const [userLoaded, setUserLoaded] = useState(false);
 
-  // Cargar usuario desde localStorage al iniciar
+  // 🔐 Validar token y cargar usuario al iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
 
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    if (storedUser && token) {
+      api.get('/auth/verify')
+        .then(() => {
+          setUser(JSON.parse(storedUser));
+        })
+        .catch(() => {
+          // Token inválido o expirado → limpiar sesión
+          localStorage.removeItem('user');
+          localStorage.removeItem('token');
+          setUser(null);
+        })
+        .finally(() => setUserLoaded(true));
+    } else {
+      setUserLoaded(true);
     }
-
-    // Asegura que userLoaded se active DESPUÉS de setUser
-    setTimeout(() => setUserLoaded(true), 0);
   }, []);
 
+  // 🔵 Login
   const login = async (email, password) => {
     setAuthLoading(true);
     setAuthError(null);
@@ -38,7 +49,10 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  // 🟢 Registro
   const register = async (formData) => {
+    setAuthLoading(true);
+    setAuthError(null);
     try {
       const { data } = await api.post('/auth/register', formData);
       setUser(data.user);
@@ -48,23 +62,28 @@ export const UserProvider = ({ children }) => {
     } catch (err) {
       setAuthError(err.response?.data?.message || 'Error en registro');
       return false;
+    } finally {
+      setAuthLoading(false);
     }
   };
 
+  // 🔴 Logout
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
     localStorage.removeItem('token');
   };
 
+  // 🟡 Fake login (para pruebas)
   const fakeLogin = () => {
     const mockUser = {
       id: 1,
-      name: 'Usuario Demo',
-      email: 'demo@ejemplo.com'
+      nombre: 'Usuario Demo',
+      correo: 'demo@ejemplo.com'
     };
     setUser(mockUser);
     localStorage.setItem('user', JSON.stringify(mockUser));
+    localStorage.setItem('token', 'fake-token');
   };
 
   return (
@@ -77,11 +96,12 @@ export const UserProvider = ({ children }) => {
         authLoading,
         authError,
         user,
-        setUser,      // ⬅️ NECESARIO PARA ACTUALIZAR PERFIL
-        userLoaded    // ⬅️ NECESARIO PARA evitar el Swal al iniciar
+        setUser,
+        userLoaded
       }}
     >
       {children}
     </UserContext.Provider>
   );
 };
+
