@@ -5,28 +5,35 @@ import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
     <footer className="footer" role="contentinfo">
-      <div className="footer-top">
-        <h3>MercadoUrbano</h3>
-        <p>Tu mercado digital de confianza</p>
-      </div>
+      <div className="footer-container">
+        
+        {/* Marca */}
+        <div className="footer-section brand">
+          <h3>MercadoUrbano</h3>
+          <p>Tu mercado digital de confianza</p>
+        </div>
 
-      <div className="footer-links">
-        <div className="footer-section" aria-label="Ayuda">
-          <h4>Ayuda</h4>
+        {/* Enlaces rápidos */}
+        <div className="footer-section">
+          <h4>Enlaces</h4>
           <ul>
-            <li><Link to="/faq">Preguntas frecuentes</Link></li>
+            <li><Link to="/productos">Productos</Link></li>
+            <li><Link to="/carrito">Carrito</Link></li>
+            <li><Link to="/perfil">Perfil</Link></li>
           </ul>
         </div>
 
-        <div className="footer-section" aria-label="Cuenta">
+        {/* Cuenta */}
+        <div className="footer-section">
           <h4>Cuenta</h4>
           <ul>
-            <li><Link to="/ingreso">Ingresar 🔐</Link></li>
-            <li><Link to="/registro">Regístrate 📝</Link></li>
+            <li><Link to="/ingreso">Ingresar</Link></li>
+            <li><Link to="/registro">Regístrate</Link></li>
           </ul>
         </div>
 
-        <div className="footer-section" aria-label="Legal">
+        {/* Legal */}
+        <div className="footer-section">
           <h4>Legal</h4>
           <ul>
             <li><Link to="/terminos">Términos y condiciones</Link></li>
@@ -36,11 +43,12 @@ const Footer = () => {
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} MercadoUrbano. Todos los derechos reservados.</p>
+        <p>&copy; {new Date().getFullYear()} MercadoUrbano - Todos los derechos reservados.</p>
       </div>
     </footer>
   );
 };
 
 export default Footer;
+
 
