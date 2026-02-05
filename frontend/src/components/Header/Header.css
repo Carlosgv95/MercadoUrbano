@@ -1,28 +1,103 @@
+/* Carrusel general */
 .custom-carousel {
   width: 100%;
   max-width: 100%;
+  overflow: hidden;
+  border-radius: 0; /* estilo limpio, sin bordes redondeados */
 }
 
+/* Imágenes grandes y profesionales */
 .carousel-image {
   width: 100%;
-  height: 600px;       /* altura fija para que se vea grande */
-  object-fit: cover;   /* llena todo el espacio, aunque recorte un poco */
+  height: 650px;              /* altura fija para desktop */
+  object-fit: cover;          /* llena el espacio sin dejar franjas */
+  filter: brightness(0.85);   /* oscurece un poco para resaltar el texto */
+  transition: transform 6s ease-in-out; /* efecto suave de zoom */
 }
 
+/* Animación de zoom sutil en cada slide */
+.carousel-item.active .carousel-image {
+  transform: scale(1.05);
+}
 
+/* Overlay elegante */
 .carousel-caption {
-  bottom: 15%;
-  text-align: center;
+  bottom: 20%;
+  left: 10%;
+  right: 10%;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.4); /* fondo semitransparente */
+  padding: 20px;
+  border-radius: 8px;
+  backdrop-filter: blur(4px); /* efecto vidrio */
 }
 
+/* Títulos llamativos */
 .carousel-title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.8rem;
+  font-weight: 800;
   color: #fff;
+  text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
 }
 
+/* Texto descriptivo */
 .carousel-text {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #f1f1f1;
+  text-shadow: 1px 1px 6px rgba(0,0,0,0.6);
+  max-width: 600px;
+}
+
+/* Botón estilo marketplace */
+.carousel-caption .btn {
+  margin-top: 15px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: #00a650; /* verde estilo Mercado Libre */
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.carousel-caption .btn:hover {
+  background: #008f4c;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .carousel-image {
+    height: 400px; /* más pequeño en tablets */
+  }
+
+  .carousel-title {
+    font-size: 2rem;
+  }
+
+  .carousel-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel-image {
+    height: 300px; /* más pequeño en móviles */
+  }
+
+  .carousel-caption {
+    bottom: 10%;
+    padding: 10px;
+  }
+
+  .carousel-title {
+    font-size: 1.5rem;
+  }
+
+  .carousel-text {
+    font-size: 0.9rem;
+  }
 }
 
