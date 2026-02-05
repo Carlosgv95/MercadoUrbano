@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useContext } from 'react';
 import { UserContext } from '../../context/UserContext';
 import api from '../../services/api';
@@ -14,7 +13,11 @@ const MisProductos = () => {
   // Estados para modales
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [productoEdit, setProductoEdit] = useState(null);
+  const [productoAEliminar, setProductoAEliminar] = useState(null);
+
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre: '',
     categoria: '',
@@ -63,17 +66,24 @@ const MisProductos = () => {
     }
   };
 
-  // Eliminar producto
-  const handleDelete = async (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      try {
-        await api.delete(`/productos/${id}`);
-        setMensaje('✅ Producto eliminado correctamente');
-        fetchProductos();
-      } catch (error) {
-        setMensaje('❌ Error al eliminar el producto');
-        console.error(error);
-      }
+  // Abrir modal de confirmación para eliminar
+  const handleDelete = (producto) => {
+    setProductoAEliminar(producto);
+    setShowDeleteModal(true);
+  };
+
+  // Confirmar eliminación
+  const confirmarEliminacion = async () => {
+    try {
+      await api.delete(`/productos/${productoAEliminar.id}`);
+      setMensaje('✅ Producto eliminado correctamente');
+      fetchProductos();
+    } catch (error) {
+      setMensaje('❌ Error al eliminar el producto');
+      console.error(error);
+    } finally {
+      setShowDeleteModal(false);
+      setProductoAEliminar(null);
     }
   };
 
@@ -88,7 +98,7 @@ const MisProductos = () => {
       await api.post('/productos', { ...nuevoProducto, usuario_id: user.id });
       setMensaje('✅ Producto agregado correctamente');
       setShowAddModal(false);
-      setNuevoProducto({ nombre: '', descripcion: '', precio: '', imagen: '' });
+      setNuevoProducto({ nombre: '', categoria: '', descripcion: '', precio: '', imagen: '' });
       fetchProductos();
     } catch (error) {
       setMensaje('❌ Error al agregar el producto');
@@ -107,21 +117,38 @@ const MisProductos = () => {
   return (
     <Container className="mt-4">
       <h2>Mis Productos</h2>
+
       {mensaje && <Alert>{mensaje}</Alert>}
-      <Button variant="primary" className="mb-3" onClick={handleAdd}>➕ Agregar Producto</Button>
+
+      <Button variant="primary" className="mb-3" onClick={handleAdd}>
+        ➕ Agregar Producto
+      </Button>
+
       <Row>
         {productos.length > 0 ? (
           productos.map((prod) => (
             <Col md={4} key={prod.id} className="mb-3">
               <Card>
-                <Card.Img variant="top" src={prod.imagen} style={{ height: '200px', objectFit: 'cover' }} />
+                <Card.Img
+                  variant="top"
+                  src={prod.imagen}
+                  style={{ height: '200px', objectFit: 'cover' }}
+                />
                 <Card.Body>
                   <Card.Title>{prod.nombre}</Card.Title>
                   <Card.Text>{prod.descripcion}</Card.Text>
-                  <Card.Text><strong>Precio:</strong> ${prod.precio}</Card.Text>
+                  <Card.Text>
+                    <strong>Precio:</strong> ${prod.precio}
+                  </Card.Text>
+
                   <div className="d-flex justify-content-between">
-                    <Button variant="secondary" size="sm" onClick={() => handleEdit(prod)}>Editar</Button>
-                    <Button variant="danger" size="sm" onClick={() => handleDelete(prod.id)}>Eliminar</Button>
+                    <Button variant="secondary" size="sm" onClick={() => handleEdit(prod)}>
+                      Editar
+                    </Button>
+
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(prod)}>
+                      Eliminar
+                    </Button>
                   </div>
                 </Card.Body>
               </Card>
@@ -144,14 +171,27 @@ const MisProductos = () => {
                 <Form.Label>Nombre</Form.Label>
                 <Form.Control name="nombre" value={productoEdit.nombre} onChange={handleChangeEdit} />
               </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>Descripción</Form.Label>
-                <Form.Control as="textarea" name="descripcion" value={productoEdit.descripcion} onChange={handleChangeEdit} />
+                <Form.Control
+                  as="textarea"
+                  name="descripcion"
+                  value={productoEdit.descripcion}
+                  onChange={handleChangeEdit}
+                />
               </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>Precio</Form.Label>
-                <Form.Control type="number" name="precio" value={productoEdit.precio} onChange={handleChangeEdit} />
+                <Form.Control
+                  type="number"
+                  name="precio"
+                  value={productoEdit.precio}
+                  onChange={handleChangeEdit}
+                />
               </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>Imagen (URL)</Form.Label>
                 <Form.Control name="imagen" value={productoEdit.imagen} onChange={handleChangeEdit} />
@@ -159,50 +199,105 @@ const MisProductos = () => {
             </Form>
           )}
         </Modal.Body>
+
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>Cancelar</Button>
-          <Button variant="primary" onClick={handleSaveEdit}>Guardar Cambios</Button>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleSaveEdit}>
+            Guardar Cambios
+          </Button>
         </Modal.Footer>
       </Modal>
 
-        
-{/* Modal para agregar */}
-<Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
-  <Modal.Header closeButton>
-    <Modal.Title>Agregar Nuevo Producto</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Form>
-      <Form.Group className="mb-3">
-        <Form.Label>Nombre</Form.Label>
-        <Form.Control name="nombre" value={nuevoProducto.nombre} onChange={handleChangeAdd} />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Categoría</Form.Label>
-        <Form.Control name="categoria" value={nuevoProducto.categoria} onChange={handleChangeAdd} placeholder="Ej: Kitchen, Food, etc." />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Descripción</Form.Label>
-        <Form.Control as="textarea" name="descripcion" value={nuevoProducto.descripcion} onChange={handleChangeAdd} />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Precio</Form.Label>
-        <Form.Control type="number" name="precio" value={nuevoProducto.precio} onChange={handleChangeAdd} />
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Label>Imagen (URL)</Form.Label>
-        <Form.Control name="imagen" value={nuevoProducto.imagen} onChange={handleChangeAdd} />
-      </Form.Group>
-    </Form>
-  </Modal.Body>
-  <Modal.Footer>
-    <Button variant="secondary" onClick={() => setShowAddModal(false)}>Cancelar</Button>
-    <Button variant="primary" onClick={handleSaveAdd}>Agregar Producto</Button>
-  </Modal.Footer>
-</Modal>
+      {/* Modal para agregar */}
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Agregar Nuevo Producto</Modal.Title>
+        </Modal.Header>
 
+        <Modal.Body>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre</Form.Label>
+              <Form.Control name="nombre" value={nuevoProducto.nombre} onChange={handleChangeAdd} />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Categoría</Form.Label>
+              <Form.Control
+                name="categoria"
+                value={nuevoProducto.categoria}
+                onChange={handleChangeAdd}
+                placeholder="Ej: Kitchen, Food, etc."
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                name="descripcion"
+                value={nuevoProducto.descripcion}
+                onChange={handleChangeAdd}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Precio</Form.Label>
+              <Form.Control
+                type="number"
+                name="precio"
+                value={nuevoProducto.precio}
+                onChange={handleChangeAdd}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Imagen (URL)</Form.Label>
+              <Form.Control name="imagen" value={nuevoProducto.imagen} onChange={handleChangeAdd} />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="primary" onClick={handleSaveAdd}>
+            Agregar Producto
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal de confirmación de eliminación */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className="text-danger">Eliminar Producto</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+          <div className="text-center">
+            <h4 className="mb-3">¿Estás seguro?</h4>
+            <p>
+              Vas a eliminar <strong>{productoAEliminar?.nombre}</strong>.  
+              Esta acción no se puede deshacer.
+            </p>
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancelar
+          </Button>
+          <Button variant="danger" onClick={confirmarEliminacion}>
+            Sí, eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };
 
 export default MisProductos;
+
