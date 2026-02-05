@@ -25,7 +25,14 @@ const Productos = () => {
     const fetchProductos = async () => {
       try {
         const response = await api.get('/productos');
-        setProductos(response.data);
+        // Normalizamos datos para evitar null en nombre/categoria
+        const normalizados = response.data.map(p => ({
+          ...p,
+          nombre: p.nombre ?? "",
+          categoria: p.categoria ?? "",
+          precio: p.precio ?? 0
+        }));
+        setProductos(normalizados);
       } catch (error) {
         console.error('Error al obtener productos:', error);
       }
@@ -55,7 +62,7 @@ const Productos = () => {
   };
 
   // 🔥 Categorías dinámicas
-  const categorias = ['Todos', ...new Set(productos.map(p => p.categoria))];
+  const categorias = ['Todos', ...new Set(productos.map(p => p.categoria || ""))];
 
   // 🔥 Filtros + búsqueda + ordenamiento
   const productosFiltrados = useMemo(() => {
@@ -66,15 +73,16 @@ const Productos = () => {
     }
 
     if (busqueda.trim() !== '') {
+      const busquedaLower = busqueda.toLowerCase();
       res = res.filter(p =>
-        p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        p.categoria.toLowerCase().includes(busqueda.toLowerCase())
+        (p.nombre ?? "").toLowerCase().includes(busquedaLower) ||
+        (p.categoria ?? "").toLowerCase().includes(busquedaLower)
       );
     }
 
     if (orden === 'precio-asc') res.sort((a, b) => a.precio - b.precio);
     else if (orden === 'precio-desc') res.sort((a, b) => b.precio - a.precio);
-    else if (orden === 'alfa') res.sort((a, b) => a.nombre.localeCompare(b.nombre));
+    else if (orden === 'alfa') res.sort((a, b) => (a.nombre ?? "").localeCompare(b.nombre ?? ""));
 
     return res;
   }, [productos, filtroMarca, orden, busqueda]);
