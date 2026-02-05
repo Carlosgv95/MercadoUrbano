@@ -5,11 +5,10 @@
 
 .carousel-image {
   width: 100%;
-  height: auto;            /* altura automática */
-  max-height: 600px;       /* límite para que no se extienda demasiado */
-  object-fit: contain;     /* ajusta la imagen sin recortarla */
-  background-color: #000;  /* relleno negro en caso de que sobren espacios */
+  height: 600px;       /* altura fija para que se vea grande */
+  object-fit: cover;   /* llena todo el espacio, aunque recorte un poco */
 }
+
 
 .carousel-caption {
   bottom: 15%;
