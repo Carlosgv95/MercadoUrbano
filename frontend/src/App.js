@@ -24,16 +24,16 @@ import './App.css';
 
 let hasShownSwal = false;
 
+// 🔐 Rutas protegidas
 const AppRoutes = () => {
   const { user, userLoaded } = useContext(UserContext);
   const location = useLocation();
 
   const protect = (component) => {
-    if (!userLoaded) return null;
+    if (!userLoaded) return null; // Evita renders prematuros
 
     if (user) return component;
 
-    // Solo mostrar el Swal si NO estamos en la página principal
     if (!hasShownSwal && location.pathname !== "/") {
       hasShownSwal = true;
       Swal.fire({
@@ -60,12 +60,10 @@ const AppRoutes = () => {
       <Route path="/carrito" element={<Cart />} />
       <Route path="/productos" element={<Productos />} />
 
-      {/* Páginas informativas */}
       <Route path="/terminos" element={<Terminos />} />
       <Route path="/privacidad" element={<Privacidad />} />
       <Route path="/faq" element={<FAQ />} />
 
-      {/* Rutas protegidas */}
       <Route path="/perfil" element={protect(<Perfil />)} />
       <Route path="/mis-productos" element={protect(<MisProductos />)} />
       <Route path="/favoritos" element={protect(<Favoritos />)} />
@@ -75,7 +73,13 @@ const AppRoutes = () => {
   );
 };
 
+// 🧠 App principal con bloqueo de render
 const App = () => {
+  const { userLoaded } = useContext(UserContext);
+
+  // ⛔ Evita que Navbar, Footer y rutas se rendericen antes de tiempo
+  if (!userLoaded) return null;
+
   return (
     <UserProvider>
       <CartProvider>
