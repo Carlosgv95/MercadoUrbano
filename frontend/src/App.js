@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 import { UserProvider, UserContext } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
@@ -22,12 +22,18 @@ import FAQ from './Pages/Informacion/FAQ';
 import Swal from "sweetalert2";
 import './App.css';
 
-let hasShownSwal = false;
-
 // 🔐 Rutas protegidas
 const AppRoutes = () => {
   const { user, userLoaded } = useContext(UserContext);
   const location = useLocation();
+
+  // 🔄 Control interno del SweetAlert
+  const [hasShownSwal, setHasShownSwal] = useState(false);
+
+  // 🧹 Resetear alerta cuando el usuario inicia sesión
+  useEffect(() => {
+    if (user) setHasShownSwal(false);
+  }, [user]);
 
   // ⛔ Bloqueo de render hasta que cargue el usuario
   if (!userLoaded) return null;
@@ -35,8 +41,10 @@ const AppRoutes = () => {
   const protect = (component) => {
     if (user) return component;
 
+    // Mostrar alerta solo una vez y solo en rutas protegidas
     if (!hasShownSwal && location.pathname !== "/") {
-      hasShownSwal = true;
+      setHasShownSwal(true);
+
       Swal.fire({
         icon: "warning",
         title: "Acceso restringido",
@@ -65,6 +73,7 @@ const AppRoutes = () => {
       <Route path="/privacidad" element={<Privacidad />} />
       <Route path="/faq" element={<FAQ />} />
 
+      {/* 🔐 Rutas protegidas */}
       <Route path="/perfil" element={protect(<Perfil />)} />
       <Route path="/mis-productos" element={protect(<MisProductos />)} />
       <Route path="/favoritos" element={protect(<Favoritos />)} />
@@ -74,7 +83,7 @@ const AppRoutes = () => {
   );
 };
 
-// 🧠 App principal SIN useContext
+// 🧠 App principal
 const App = () => {
   return (
     <UserProvider>
