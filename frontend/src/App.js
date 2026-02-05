@@ -29,9 +29,10 @@ const AppRoutes = () => {
   const { user, userLoaded } = useContext(UserContext);
   const location = useLocation();
 
-  const protect = (component) => {
-    if (!userLoaded) return null; // Evita renders prematuros
+  // ⛔ Bloqueo de render hasta que cargue el usuario
+  if (!userLoaded) return null;
 
+  const protect = (component) => {
     if (user) return component;
 
     if (!hasShownSwal && location.pathname !== "/") {
@@ -73,13 +74,8 @@ const AppRoutes = () => {
   );
 };
 
-// 🧠 App principal con bloqueo de render
+// 🧠 App principal SIN useContext
 const App = () => {
-  const { userLoaded } = useContext(UserContext);
-
-  // ⛔ Evita que Navbar, Footer y rutas se rendericen antes de tiempo
-  if (!userLoaded) return null;
-
   return (
     <UserProvider>
       <CartProvider>
@@ -98,6 +94,7 @@ const App = () => {
 };
 
 export default App;
+
 
 
 
