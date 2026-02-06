@@ -3,10 +3,12 @@ import { Container, Row, Col, Form, Nav } from 'react-bootstrap';
 import { CartContext } from "../../context/CartContext";
 import { UserContext } from "../../context/UserContext";
 import api from '../../services/api';
+import './Productos.css';
 
 // Componentes
 import ProductCard from '../../components/ProductCard/ProductCard';
 import ProductModal from '../../components/ProductModal/ProductModal';
+import './Productos.css'; // estilos mejorados
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
@@ -25,7 +27,6 @@ const Productos = () => {
     const fetchProductos = async () => {
       try {
         const response = await api.get('/productos');
-        // Normalizamos datos para evitar null en nombre/categoria
         const normalizados = response.data.map(p => ({
           ...p,
           nombre: p.nombre ?? "",
@@ -92,28 +93,51 @@ const Productos = () => {
       <Row>
         {/* --- FILTROS --- */}
         <Col md={3} lg={2} className="mb-4">
-          <div className="bg-white p-3 rounded shadow-sm">
-            <h6 className="fw-bold mb-3 border-bottom pb-2">FILTRAR</h6>
-            <Nav className="flex-column mb-3">
-              {categorias.map(category => (
-                <Nav.Link
-                  key={category}
-                  onClick={() => setFiltroMarca(category)}
-                  className={`py-1 px-0 small ${
-                    filtroMarca === category ? 'fw-bold text-primary' : 'text-muted'
-                  }`}
-                >
-                  {category}
-                </Nav.Link>
-              ))}
-            </Nav>
-            <Form.Control
-              type="text"
-              placeholder="Buscar..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              size="sm"
-            />
+          <div className="filters-card shadow-sm rounded-3 p-3">
+            <h6 className="filters-title mb-3">🔍 Filtrar productos</h6>
+
+            {/* Categorías */}
+            <div className="filters-section mb-4">
+              <h6 className="filters-subtitle">Categorías</h6>
+              <Nav className="flex-column">
+                {categorias.map(category => (
+                  <Nav.Link
+                    key={category}
+                    onClick={() => setFiltroMarca(category)}
+                    className={`filter-link ${filtroMarca === category ? 'active' : ''}`}
+                  >
+                    {category}
+                  </Nav.Link>
+                ))}
+              </Nav>
+            </div>
+
+            {/* Búsqueda */}
+            <div className="filters-section mb-4">
+              <h6 className="filters-subtitle">Buscar</h6>
+              <Form.Control
+                type="text"
+                placeholder="Escribe el nombre..."
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                className="filter-input"
+              />
+            </div>
+
+            {/* Ordenamiento */}
+            <div className="filters-section">
+              <h6 className="filters-subtitle">Ordenar por</h6>
+              <Form.Select
+                value={orden}
+                onChange={(e) => setOrden(e.target.value)}
+                className="filter-select"
+              >
+                <option value="default">Relevancia</option>
+                <option value="precio-asc">Precio: Menor a Mayor</option>
+                <option value="precio-desc">Precio: Mayor a Menor</option>
+                <option value="alfa">Nombre (A-Z)</option>
+              </Form.Select>
+            </div>
           </div>
         </Col>
 
@@ -127,7 +151,7 @@ const Productos = () => {
                   onOpenModal={handleOpenModal}
                   addToCart={addToCart}
                   isFavorite={favorites.some(f => f.id === prod.id)}
-                  onFavoriteChange={fetchFavoritos} // ✅ Actualiza favoritos en tiempo real
+                  onFavoriteChange={fetchFavoritos}
                 />
               </Col>
             ))}

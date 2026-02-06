@@ -1,0 +1,52 @@
+.filters-card {
+  background: #fff;
+  border: 1px solid #eaeaea;
+  transition: all 0.3s ease;
+}
+
+.filters-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.filters-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #00a650; /* verde estilo marketplace */
+  padding-bottom: 6px;
+}
+
+.filters-subtitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.filter-link {
+  font-size: 0.85rem;
+  color: #666;
+  padding: 6px 0;
+  transition: color 0.2s ease;
+}
+
+.filter-link:hover {
+  color: #00a650;
+}
+
+.filter-link.active {
+  font-weight: 700;
+  color: #00a650;
+}
+
+.filter-input {
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.filter-select {
+  font-size: 0.85rem;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
